@@ -1,0 +1,15 @@
+applications:
+- name: predix-solar-api
+  memory: 1G
+  stack: cflinuxfs2
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
+  command:  node .
+  services:
+    - PostgreSQL
+    - SolarUAA
+env:
+    node_env: cloud
+    uaa_service_label : predix-uaa
+    #base64ClientCredential: bG9naW5fY2xpZW50X2lkOjNzYzBycDEwbg==
+    #loginBase64ClientCredential: bG9naW5fY2xpZW50X2lkOjNzYzBycDEwbg==
+    websocketServerURL: /livestream
