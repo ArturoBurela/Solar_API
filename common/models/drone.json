@@ -1,0 +1,39 @@
+{
+  "name": "Drone",
+  "plural": "Drones",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "Model": {
+      "type": "string",
+      "required": true
+    },
+    "Manufacturer": {
+      "type": "string",
+      "required": true
+    },
+    "maxAltitude": {
+      "type": "number",
+      "required": true
+    },
+    "maxRange": {
+      "type": "number",
+      "required": true
+    },
+    "batteryCapacity": {
+      "type": "number",
+      "required": true
+    },
+    "cameraResolution": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

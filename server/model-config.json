@@ -34,5 +34,17 @@
   "Role": {
     "dataSource": "db",
     "public": false
+  },
+  "Project": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Drone": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Material": {
+    "dataSource": "db",
+    "public": true
   }
 }
