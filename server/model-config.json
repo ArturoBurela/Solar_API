@@ -46,5 +46,17 @@
   "Material": {
     "dataSource": "db",
     "public": true
+  },
+  "Coordinate": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Photo": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Result": {
+    "dataSource": "db",
+    "public": true
   }
 }

@@ -29,7 +29,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "drones": {
+      "type": "hasMany",
+      "model": "Drone",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -1,0 +1,23 @@
+{
+  "name": "Coordinate",
+  "plural": "Coordinates",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "position": {
+      "type": "geopoint",
+      "required": true
+    },
+    "altitude": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

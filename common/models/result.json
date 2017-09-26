@@ -1,0 +1,33 @@
+{
+  "name": "Result",
+  "plural": "Results",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "position": {
+      "type": "geopoint",
+      "required": true
+    },
+    "direction": {
+      "type": "string"
+    },
+    "angle": {
+      "type": "string",
+      "required": true
+    },
+    "generatedEnergy": {
+      "type": "number"
+    },
+    "roi": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
