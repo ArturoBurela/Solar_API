@@ -31,9 +31,26 @@
   "validations": [],
   "relations": {
     "drones": {
-      "type": "hasMany",
+      "type": "hasAndBelongsToMany",
       "model": "Drone",
       "foreignKey": ""
+    },
+    "coordinates": {
+      "type": "hasMany",
+      "model": "Coordinate",
+      "foreignKey": ""
+    },
+    "results": {
+      "type": "hasMany",
+      "model": "Result",
+      "foreignKey": "",
+      "through": "Coordinate"
+    },
+    "photos": {
+      "type": "hasMany",
+      "model": "Photo",
+      "foreignKey": "",
+      "through": "Coordinate"
     }
   },
   "acls": [],
