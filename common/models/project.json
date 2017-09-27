@@ -57,7 +57,7 @@
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "$unauthenticated",
+      "principalId": "admin",
       "permission": "DENY"
     }
   ],
