@@ -41,7 +41,7 @@
   },
   "Drone": {
     "dataSource": "db",
-    "public": true
+    "public": false
   },
   "Material": {
     "dataSource": "db",

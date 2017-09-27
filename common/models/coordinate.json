@@ -33,7 +33,7 @@
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "$unauthenticated",
+      "principalId": "$owner",
       "permission": "DENY"
     }
   ],
