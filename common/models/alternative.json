@@ -1,0 +1,29 @@
+{
+  "name": "Alternative",
+  "plural": "Alternatives",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "roi": {
+      "type": "string",
+      "required": true
+    },
+    "generatedEnergy": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "results": {
+      "type": "hasMany",
+      "model": "Result",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

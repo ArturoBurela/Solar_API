@@ -58,5 +58,13 @@
   "Result": {
     "dataSource": "db",
     "public": true
+  },
+  "Area": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Alternative": {
+    "dataSource": "db",
+    "public": true
   }
 }
