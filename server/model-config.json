@@ -14,49 +14,49 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "SolarDB"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": false
   },
   "Project": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": true
   },
   "Drone": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": true
   },
   "Material": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": true
   },
   "Coordinate": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": true
   },
   "Photo": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": true
   },
   "Result": {
-    "dataSource": "db",
+    "dataSource": "SolarDB",
     "public": true
   }
 }
