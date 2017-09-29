@@ -1,4 +1,4 @@
 module.exports = function (app) {
-   app.dataSources.SolarDB.automigrate();
+   app.dataSources.SolarDB.autoupdate();
    console.log("Performed automigration.");
 }
