@@ -18,17 +18,19 @@
   },
   "validations": [],
   "relations": {
-    "results": {
-      "type": "hasOne",
-      "model": "Result",
-      "foreignKey": ""
-    },
     "photos": {
       "type": "hasOne",
       "model": "Photo",
       "foreignKey": ""
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "DENY"
+    }
+  ],
   "methods": {}
 }

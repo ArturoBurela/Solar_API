@@ -1,0 +1,39 @@
+{
+  "name": "Area",
+  "plural": "Areas",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "solarRadiation": {
+      "type": "number",
+      "required": true
+    },
+    "azimuth": {
+      "type": "number",
+      "required": true
+    },
+    "surface": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "alternatives": {
+      "type": "hasMany",
+      "model": "Alternative",
+      "foreignKey": ""
+    },
+    "results": {
+      "type": "hasMany",
+      "model": "Result",
+      "foreignKey": "",
+      "through": "Alternative"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

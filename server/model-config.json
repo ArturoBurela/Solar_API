@@ -41,7 +41,7 @@
   },
   "Drone": {
     "dataSource": "SolarDB",
-    "public": true
+    "public": false
   },
   "Material": {
     "dataSource": "SolarDB",
@@ -56,6 +56,14 @@
     "public": true
   },
   "Result": {
+    "dataSource": "SolarDB",
+    "public": true
+  },
+  "Area": {
+    "dataSource": "SolarDB",
+    "public": true
+  },
+  "Alternative": {
     "dataSource": "SolarDB",
     "public": true
   }
