@@ -26,6 +26,12 @@
       "type": "hasMany",
       "model": "Alternative",
       "foreignKey": ""
+    },
+    "results": {
+      "type": "hasMany",
+      "model": "Result",
+      "foreignKey": "",
+      "through": "Alternative"
     }
   },
   "acls": [],

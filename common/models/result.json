@@ -27,7 +27,18 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "coordinates": {
+      "type": "hasOne",
+      "model": "Coordinate",
+      "foreignKey": ""
+    },
+    "materials": {
+      "type": "hasOne",
+      "model": "Material",
+      "foreignKey": ""
+    }
+  },
   "acls": [
     {
       "accessType": "*",

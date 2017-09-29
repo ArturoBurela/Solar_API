@@ -18,11 +18,6 @@
   },
   "validations": [],
   "relations": {
-    "results": {
-      "type": "hasOne",
-      "model": "Result",
-      "foreignKey": ""
-    },
     "photos": {
       "type": "hasOne",
       "model": "Photo",
