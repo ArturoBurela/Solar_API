@@ -9,10 +9,17 @@ module.exports = function(app) {
    * for more info.
    */
    var Role = app.models.Role;
+   var dataSource = app.datasources.GoogleMaps;
    //create the admin role
    Role.create({
      name: 'admin'
    }, function(err, role) {
      if (err) cb(err);
    });
+
+   function lol(result) {
+     console.log(result);
+   }
+
+   dataSource.geocode('107 S B St', 'San Mateo', '94401', lol);
 };

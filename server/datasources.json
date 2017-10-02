@@ -1,16 +1,37 @@
 {
-  "db": {
-    "name": "db",
+  "SolarDB": {
+    "name": "SolarDB",
     "connector": "memory"
   },
-  "SolarDB": {
-    "host": "db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com",
-    "port": 5432,
-    "url": "postgres://MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M:UrN0t4lLoW3dH3r3*4l1@db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com:5432/SolarDB",
-    "database": "SolarDB",
-    "password": "UrN0t4lLoW3dH3r3*4l1",
-    "name": "SolarDB",
-    "user": "MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M",
-    "connector": "postgresql"
+  "GoogleMaps": {
+    "name": "GoogleMaps",
+    "baseURL": "https://maps.googleapis.com/maps/api/",
+    "crud": false,
+    "connector": "rest",
+    "options": {
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json"
+      },
+      "strictSSL": true
+    },
+    "operations": [{
+      "template": {
+        "method": "GET",
+        "url": "http://maps.googleapis.com/maps/api/geocode/{format=json}",
+        "headers": {
+          "accepts": "application/json",
+          "content-type": "application/json"
+        },
+        "query": {
+          "address": "{street},{city},{zipcode}",
+          "sensor": "{sensor=false}"
+        },
+        "responsePath": "$.results[0].geometry.location"
+      },
+      "functions": {
+        "geocode": ["street", "city", "zipcode"]
+      }
+      }]
+    }
   }
-}
