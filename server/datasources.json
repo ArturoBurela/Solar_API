@@ -3,6 +3,7 @@
     "name": "SolarDB",
     "connector": "memory"
   },
+  
   "GoogleMaps": {
     "name": "GoogleMaps",
     "baseURL": "https://maps.googleapis.com/maps/api/",
