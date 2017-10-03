@@ -21,7 +21,7 @@ module.exports = function(app) {
     console.log(result);
   }
 
-  dataSource.geocode('107 S B St', 'San Mateo', '94401').then(function(value) {
+  /*dataSource.geocode('107 S B St', 'San Mateo', '94401').then(function(value) {
     // cumplimiento
     console.log(value);
   }, function(reason) {
@@ -34,5 +34,5 @@ module.exports = function(app) {
   }, function(reason) {
     // rechazo
     console.log(reason);
-  });
+  });*/
 };
