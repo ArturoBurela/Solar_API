@@ -7,6 +7,10 @@
     "validateUpsert": true
   },
   "properties": {
+    "center": {
+      "type": "geopoint",
+      "required": true
+    },
     "solarRadiation": {
       "type": "number",
       "required": true
