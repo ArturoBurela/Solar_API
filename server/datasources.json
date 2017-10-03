@@ -32,6 +32,23 @@
       "functions": {
         "geocode": ["street", "city", "zipcode"]
       }
+    },
+    {
+      "template": {
+        "method": "GET",
+        "url": "https://maps.googleapis.com/maps/api/elevation/{format=json}",
+        "headers": {
+          "accepts": "application/json",
+          "content-type": "application/json"
+        },
+        "query": {
+          "locations": "{locations}"
+        },
+        "responsePath": "$.results"
+      },
+      "functions": {
+        "getElevation": ["locations"]
+      }
       }]
     }
   }
