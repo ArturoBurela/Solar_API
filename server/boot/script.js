@@ -9,11 +9,12 @@ module.exports = function (app) {
   app.datasources.SolarDB.isActual(modelos, function(err, actual) {
     if(!actual){
       app.datasources.SolarDB.autoupdate(modelos, function(err, result){
+        console.log("Performed automigration");
         if(!err){
           Role.create({
             name: 'admin'
           }, function(err, role) {
-            if (err) cb(err);
+            if (err) throw err;
           });
         }
       });
