@@ -36,6 +36,11 @@
       "model": "Result",
       "foreignKey": "",
       "through": "Alternative"
+    },
+    "limits": {
+      "type": "hasMany",
+      "model": "Coordinate",
+      "foreignKey": ""
     }
   },
   "acls": [],

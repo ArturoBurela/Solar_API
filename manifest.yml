@@ -6,10 +6,13 @@ applications:
   command:  node .
   services:
     - PostgreSQL
-    - SolarUAA
+    - UAASolar
+    - PhotosBlobstore
 env:
     node_env: cloud
     #uaa_service_label : predix-uaa
     #base64ClientCredential: bG9naW5fY2xpZW50X2lkOjNzYzBycDEwbg==
     #loginBase64ClientCredential: bG9naW5fY2xpZW50X2lkOjNzYzBycDEwbg==
     websocketServerURL: /livestream
+    BROKER_SERVICE_NAME: PhotosBlobstore
+    ENABLE_SERVER_SIDE_ENCRYPTION: False
