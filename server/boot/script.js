@@ -1,38 +1,36 @@
 'use strict';
-
-module.exports = function(app) {
-  /*
-  * The `app` object provides access to a variety of LoopBack resources such as
-  * models (e.g. `app.models.YourModelName`) or data sources (e.g.
-  * `app.datasources.YourDataSource`). See
-  * http://docs.strongloop.com/display/public/LB/Working+with+LoopBack+objects
-  * for more info.
-  */
+module.exports = function (app) {
   var Role = app.models.Role;
-  var dataSource = app.datasources.GoogleMaps;
-  //create the admin role
-  Role.create({
-    name: 'admin'
-  }, function(err, role) {
-    if (err) cb(err);
+  //automigrar todos los modelos a base de datos en postgresql
+  app.datasources.SolarDB.autoupdate(function(err, result){
+    console.log("Performed automigration");
+    if(err) throw err;
   });
+  //crear Role
+  Role.find({ name: 'admin' }, function(err, results) {//Encontrar el Role
+    if (err) { throw err; }
 
-  function lol(result) {
-    console.log(result);
-  }
-
-  /*dataSource.geocode('107 S B St', 'San Mateo', '94401').then(function(value) {
-    // cumplimiento
-    console.log(value);
-  }, function(reason) {
-    // rechazo
-    console.log(reason);
+    if (results.length < 1) {//si no existe entonces crearlo
+      Role.create({
+        name: 'admin'
+      }, function(err, role) {
+        if (err) throw err;
+      });
+    }
   });
-  dataSource.getElevation("39.6391536,-104.9847034|12.23423,-99.1").then(function(value) {
-    // cumplimiento
-    console.log(value);
-  }, function(reason) {
-    // rechazo
-    console.log(reason);
-  });*/
-};
+  //Get token from UAA to use Analytics Framework
+  var request = require("request");
+  var options = { method: 'POST',
+  url: 'https://8dc085ff-272e-4cac-901e-15c3f90233ee.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token',
+  headers:
+  { 'cache-control': 'no-cache',
+  'content-type': 'application/x-www-form-urlencoded',
+  authorization: 'Basic YWZfcnQ6cGFzc3dvcmQ=' },
+  form: { client_id: 'af_rt', grant_type: 'client_credentials' } };
+
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+
+    console.log(body);
+  });
+}
