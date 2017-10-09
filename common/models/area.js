@@ -53,7 +53,7 @@ module.exports = function(Area) {
         $('table').eq(4).find('tr').eq(1).find('td').eq(0).remove();
         var table = $('table').eq(4).parsetable();
         table = array2DToJSON(table,'radiation');
-        //var a = JSON.stringify(tableToObj(table));
+
         console.log(JSON.parse(table));
         //console.log(body.getElementsByTagName('table'));
         next();
