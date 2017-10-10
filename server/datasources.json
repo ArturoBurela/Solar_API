@@ -1,6 +1,6 @@
 {
   "SolarDB": {
-    "name": "db",
+    "name": "SolarDB",
     "connector": "memory"
   },
   "SolarDB2": {
@@ -9,7 +9,7 @@
     "url": "postgres://MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M:UrN0t4lLoW3dH3r3*4l1@db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com:5432/SolarDB",
     "database": "SolarDB",
     "password": "UrN0t4lLoW3dH3r3*4l1",
-    "name": "SolarDB",
+    "name": "SolarDB2",
     "user": "MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M",
     "connector": "postgresql"
   },
@@ -25,40 +25,72 @@
       },
       "strictSSL": true
     },
-    "operations": [{
-      "template": {
-        "method": "GET",
-        "url": "http://maps.googleapis.com/maps/api/geocode/{format=json}",
-        "headers": {
-          "accepts": "application/json",
-          "content-type": "application/json"
+    "operations": [
+      {
+        "template": {
+          "method": "GET",
+          "url": "http://maps.googleapis.com/maps/api/geocode/{format=json}",
+          "headers": {
+            "accepts": "application/json",
+            "content-type": "application/json"
+          },
+          "query": {
+            "address": "{street},{city},{zipcode}",
+            "sensor": "{sensor=false}"
+          },
+          "responsePath": "$.results[0].geometry.location"
         },
-        "query": {
-          "address": "{street},{city},{zipcode}",
-          "sensor": "{sensor=false}"
-        },
-        "responsePath": "$.results[0].geometry.location"
+        "functions": {
+          "geocode": [
+            "street",
+            "city",
+            "zipcode"
+          ]
+        }
       },
-      "functions": {
-        "geocode": ["street", "city", "zipcode"]
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://maps.googleapis.com/maps/api/elevation/{format=json}",
+          "headers": {
+            "accepts": "application/json",
+            "content-type": "application/json"
+          },
+          "query": {
+            "locations": "{locations}"
+          },
+          "responsePath": "$.results"
+        },
+        "functions": {
+          "getElevation": [
+            "locations"
+          ]
+        }
       }
+    ]
+  },
+  "BlobStore": {
+    "name": "BlobStore",
+    "baseURL": "https://bucket-16909670-8588-4793-a261-2ffc3a64d3c4.s3-us-west-2.amazonaws.com",
+    "crud": false,
+    "connector": "rest",
+    "options": {
+      "strictSSL": true
     },
-    {
-      "template": {
-        "method": "GET",
-        "url": "https://maps.googleapis.com/maps/api/elevation/{format=json}",
-        "headers": {
-          "accepts": "application/json",
-          "content-type": "application/json"
+    "operations": [
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://bucket-16909670-8588-4793-a261-2ffc3a64d3c4.s3-us-west-2.amazonaws.com/",
+          "headers": {
+            "Date": "mockDate",
+            "Authorization": "mockAuth"
+          }
         },
-        "query": {
-          "locations": "{locations}"
-        },
-        "responsePath": "$.results"
-      },
-      "functions": {
-        "getElevation": ["locations"]
+        "functions": {
+          "list": []
+        }
       }
-      }]
-    }
+    ]
   }
+}

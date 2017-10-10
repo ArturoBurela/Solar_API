@@ -50,11 +50,32 @@ module.exports = function (app) {
     url: url,
     headers: {
       'Date': date.toUTCString(),
-      'Authorization':' AWS '+key+':'+hash
+      'Authorization':' AWS '+ak+':'+hash
     }
   };
-  request(options, function (error, response, body) {
+  /*request(options, function (error, response, body) {
     if (error) throw new Error(error);
     console.log(body);
+  });*/
+
+  //Import app object
+  var app = require('../../server/server');
+  //Import GoogleMapsAPI as a datasource
+  var BlobStore = app.datasources.BlobStore;
+  var BlobStoreConnector = BlobStore.connector;
+  //Set the before execute process
+  BlobStoreConnector.observe('before execute', function(ctx, next) {
+    console.log(ctx);
+    ctx.req.headers = options.headers;
+    console.log(ctx);
+    next();
   });
+  //Get the elevation from google
+  BlobStore.list().then(function(value) {
+    console.log(value);
+  }, function(reason) {
+    //If elevation cant be obtained respond with error
+    console.log(reason);
+  });
+
 }
