@@ -3,16 +3,7 @@
     "name": "SolarDB",
     "connector": "memory"
   },
-  "SolarDB2": {
-    "host": "db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com",
-    "port": 5432,
-    "url": "postgres://MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M:UrN0t4lLoW3dH3r3*4l1@db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com:5432/SolarDB",
-    "database": "SolarDB",
-    "password": "UrN0t4lLoW3dH3r3*4l1",
-    "name": "SolarDB2",
-    "user": "MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M",
-    "connector": "postgresql"
-  },
+
   "GoogleMaps": {
     "name": "GoogleMaps",
     "baseURL": "https://maps.googleapis.com/maps/api/",
@@ -89,6 +80,36 @@
         },
         "functions": {
           "list": []
+        }
+      }
+    ]
+  },
+  "NASA": {
+    "name": "NASA",
+    "baseURL": "https://eosweb.larc.nasa.gov/cgi-bin/sse/grid.cgi",
+    "crud": false,
+    "connector": "rest",
+    "headers": {
+      "accepts": "text/html",
+      "content-type": "text/html"
+    },
+    "operations":[
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://eosweb.larc.nasa.gov/cgi-bin/sse/grid.cgi",
+          "query": {
+            "num":"081110",
+            "hgt":"100",
+            "veg":"17",
+            "p":"grid_id",
+            "step":"2",
+            "lat": "{latitude}",
+            "lon": "{longitude}"
+          }
+        },
+        "functions": {
+          "getNASAData": ["latitude", "longitude"]
         }
       }
     ]

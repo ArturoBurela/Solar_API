@@ -64,7 +64,7 @@ module.exports = function (app) {
   var BlobStore = app.datasources.BlobStore;
   var BlobStoreConnector = BlobStore.connector;
   //Set the before execute process
-  BlobStoreConnector.observe('before execute', function(ctx, next) {
+/*  BlobStoreConnector.observe('before execute', function(ctx, next) {
     console.log(ctx);
     ctx.req.headers = options.headers;
     console.log(ctx);
@@ -76,6 +76,6 @@ module.exports = function (app) {
   }, function(reason) {
     //If elevation cant be obtained respond with error
     console.log(reason);
-  });
+  });*/
 
 }

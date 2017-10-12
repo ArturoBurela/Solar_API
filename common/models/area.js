@@ -4,8 +4,8 @@ var cheerio = require('cheerio'), cheerioTableparser = require('cheerio-tablepar
 var app = require('../../server/server');
 //Import GoogleMapsAPI as a datasource
 var MapsAPI = app.datasources.GoogleMaps;
+var nasaData = app.datasources.NASA;
 
-const request = require('request');
 function array2DToJSON(a, p, nl) {
       var i, j, s = '[{"' + p + '":{';
       nl = nl || '';
@@ -32,37 +32,99 @@ function array2DToJSON(a, p, nl) {
         return '{"' + p + '":' + s + '}';
       return s;
     }
+function deleteTags($,number){
+  if (number === 2) {
+    $('table').eq(number).find('tr').eq(1).find('td').eq(0).remove();
+    $('table').eq(number).find('tr').eq(0).find('td').eq(0).remove();
+    $('table').eq(number).find('tr').eq(0).find('td').eq(-1).remove();
+    $('table').eq(number).find('tr').eq(1).find('td').eq(-1).remove();
+  }
+  else {
+    $('table').eq(number).find('caption').remove();//delete tags that aren't needed
+    $('table').eq(number).find('br').remove();//delete tags that aren't needed
+    $('table').eq(number).find('tr').eq(0).find('td').eq(0).remove();
+    $('table').eq(number).find('tr').eq(1).find('td').eq(0).remove();
+    $('table').eq(number).find('tr').eq(0).find('td').eq(-1).remove();
+    $('table').eq(number).find('tr').eq(1).find('td').eq(-1).remove();
+  }
+}
+
 module.exports = function(Area) {
   //Add remote hook to trigger events when Area will be saved
   Area.observe('before save', function getElevation(ctx, next) {
     console.log(ctx.instance);
     //Get the elevation from google
-    MapsAPI.getElevation("39.6391536,-104.9847034|12.23423,-99.1").then(function(value) {
+    MapsAPI.getElevation("19.49,-99.157").then(function(value) {
       //If elevation is received then call nasa API
-      //console.log(value);
-      request('https://eosweb.larc.nasa.gov/cgi-bin/sse/grid.cgi?&=&num=147037&lat=-34&submit=Submit&hgt=100&veg=17&email=&sitelev=&step=2&p=grid_id&p=avg_dnr&p=azi_ang&p=T10M&lon=-34', function (error, response, body) {
-        console.log('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode);
-        console.log(response.headers['content-type']); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
-        //create JSON from HTML table
-        var $ = cheerio.load(body);
-        cheerioTableparser($);
-        $('table').eq(4).find('caption').remove();
-        $('table').eq(4).find('br').remove();
-        $('table').eq(4).find('tr').eq(0).find('td').eq(0).remove();
-        $('table').eq(4).find('tr').eq(1).find('td').eq(0).remove();
-        var table = $('table').eq(4).parsetable();
-        table = array2DToJSON(table,'radiation');
+      console.log(value);
+      nasaData.getNASAData("19.49", "-99.157").then(function(body){
 
-        console.log(JSON.parse(table));
-        //console.log(body.getElementsByTagName('table'));
+        var $ = cheerio.load(body);//load response in cheerio
+        cheerioTableparser($);//load table parser
+        for (var i = 0; i < 8; i++) {
+          $('table').eq(0).remove();//delete all tables that Won't be used
+        }
+        for (var i = 0; i < 21; i++) {
+          $('table').eq(1).remove();//delete all tables that Won't be used
+        }
+        for (var i = 0; i < 14 ; i++) {
+          $('table').eq(3).remove();
+        }
+        for (var i = 0; i < $('table').length; i++) {
+          $('table').eq(4).remove();
+        }
+        deleteTags($,0);
+        var radiation = $('table').eq(0).parsetable();
+
+        //Max value from azimuth table
+        var max = 0;
+        for(var i=0; i< 25; i++){
+          $('table').eq(1).find('tr').eq(i).find('td').eq(0).remove();
+        }
+        $('table').eq(1).find('td').each(function(i, element)
+        {
+           var a = parseFloat( $(element).text() );
+           if (a > max) max = a;
+        });
+        //Min value from azimuth table
+        var min = Number.MAX_VALUE;
+        $('table').eq(1).find('tr td').each(function(i, element)
+        {
+           var a = parseFloat($(element).text());
+           if (a < min && a != 0) min = a;
+        });
+        var azimuth = (max + min) / 2;
+        //Tilt Table
+        $('table').eq(2).find('caption').remove();
+        $('table').eq(2).find('br').remove();
+        for (var i = 1; i < 7; i++) {
+            $('table').eq(2).find('tr').eq(1).remove();
+        }
+        for (var i = 1; i < 5; i++) {
+            $('table').eq(2).find('tr').eq(2).remove();
+        }
+        deleteTags($,2);
+        var tilt=$('table').eq(2).parsetable();
+        //Air Temperature Table
+        deleteTags($,3);
+        for (var i = 0; i < 2; i++) {
+          $('table').eq(3).find('tr').eq(2).remove();
+        }
+        console.log("terminado");
+        var airTemp = $('table').eq(3).parsetable();
+        console.log(radiation);
+        console.log(tilt);
+        console.log(airTemp);
+        console.log(max);
+        console.log(min);
+        console.log(azimuth);
         next();
       });
-    }, function(reason) {
-      //If elevation cant be obtained respond with error
+        //next();
+      });
+    },
+    function (reason) {
       console.log(reason);
       next();
     });
-  });
 };
