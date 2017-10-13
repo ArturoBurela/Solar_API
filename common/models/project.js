@@ -8,7 +8,7 @@ module.exports = function(Project) {
 
   Project.instance = null;
 
-  /*Project.instance = NULL;
+  /* Project.instance = NULL;
 
   Project.createInstance = new function(msg, cb) {
 
@@ -36,5 +36,5 @@ module.exports = function(Project) {
     var instance1 = Project.Singleton.getInstance("l");
     var instance2 = Project.Singleton.getInstance("l");
     console.log('Same instance? ' + (instance1 === instance2));
-  }*/
+  } */
 };
