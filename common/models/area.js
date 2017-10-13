@@ -5,6 +5,7 @@ var app = require('../../server/server');
 //Import GoogleMapsAPI as a datasource
 var MapsAPI = app.datasources.GoogleMaps;
 var nasaData = app.datasources.NASA;
+var SA = app.datasources.SolarAnalytics;
 var photovoltaicAnalytics = app.datasources.SolarAnalytics;
 function deleteTags($,number){
   if (number === 2) {
@@ -189,6 +190,12 @@ module.exports = function(Area) {
         request(options, function(error, response, body) {
           if (error) throw new Error(error);
           console.log(body);
+        });
+        SA.executePhotovoltaic(data).then(function(value) {
+          console.log("From datasource\n",value);
+        }, function(reason) {
+          // If elevation cant be obtained respond with error
+          console.log(reason);
         });
         next();
       });

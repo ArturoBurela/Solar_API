@@ -16,14 +16,23 @@
     },
     "angle": {
       "type": "string",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "generatedEnergy": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "roi": {
       "type": "string",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     }
   },
   "validations": [],

@@ -13,15 +13,24 @@
     },
     "solarRadiation": {
       "type": "number",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "azimuth": {
       "type": "number",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "surface": {
       "type": "number",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     }
   },
   "validations": [],

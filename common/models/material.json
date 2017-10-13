@@ -17,7 +17,10 @@
     },
     "Cost": {
       "type": "number",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "Manufacturer": {
       "type": "string",
@@ -25,40 +28,73 @@
     },
     "Capacity": {
       "type": "number",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "ModuleEfficiency": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "TemperatureCoefficientIsc": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "NOCT": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "ArrayLosses": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "InverterEfficiency": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "InverterLosses": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "Large": {
       "type": "number",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "Width": {
       "type": "number",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "Height": {
       "type": "number",
-      "required": true
+      "required": true,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "Weight": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "Connector": {
       "type": "string"
