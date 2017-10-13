@@ -3,6 +3,16 @@
     "name": "SolarDB",
     "connector": "memory"
   },
+  "SolarDB2": {
+    "host": "db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com",
+    "port": 5432,
+    "url": "postgres://MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M:UrN0t4lLoW3dH3r3*4l1@db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com:5432/SolarDB",
+    "database": "SolarDB",
+    "password": "UrN0t4lLoW3dH3r3*4l1",
+    "name": "SolarDB2",
+    "user": "MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M",
+    "connector": "postgresql"
+  },
   "GoogleMaps": {
     "name": "GoogleMaps",
     "baseURL": "https://maps.googleapis.com/maps/api/",
@@ -112,6 +122,47 @@
             "latitude",
             "longitude"
           ]
+        }
+      }
+    ]
+  },
+  "SolarAnalytics": {
+    "name": "SolarAnalytics",
+    "baseURL": "https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/",
+    "crud": false,
+    "connector": "rest",
+    "options": {
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json"
+      },
+      "strictSSL": true
+    },
+    "operations": [
+      {
+        "template": {
+          "method": "POST",
+          "url": "https://solar-analytics-framework.predix-analytics-ui.run.aws-usw02-pr.ice.predix.io/api/catalog/analytics/aa7bbd17-23c0-4bf1-8a53-3ddd13267f68/execution",
+          "headers": {
+            "Date": "mockDate",
+            "Authorization": "mockAuth"
+          }
+        },
+        "functions": {
+          "executePhotovoltaic": []
+        }
+      },
+      {
+        "template": {
+          "method": "POST",
+          "url": "https://solar-analytics-framework.predix-analytics-ui.run.aws-usw02-pr.ice.predix.io/api/catalog/analytics/939d3928-e109-458d-81bd-4e1a912ba473/execution",
+          "headers": {
+            "Date": "mockDate",
+            "Authorization": "mockAuth"
+          }
+        },
+        "functions": {
+          "executeCustom": []
         }
       }
     ]
