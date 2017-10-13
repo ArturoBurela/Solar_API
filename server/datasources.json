@@ -3,6 +3,16 @@
     "name": "SolarDB",
     "connector": "memory"
   },
+  "_comment": {
+    "host": "db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com",
+    "port": 5432,
+    "url": "postgres://MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M:UrN0t4lLoW3dH3r3*4l1@db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com:5432/SolarDB",
+    "database": "SolarDB",
+    "password": "UrN0t4lLoW3dH3r3*4l1",
+    "name": "SolarDB2",
+    "user": "MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M",
+    "connector": "postgresql"
+  },
   "GoogleMaps": {
     "name": "GoogleMaps",
     "baseURL": "https://maps.googleapis.com/maps/api/",
@@ -123,7 +133,7 @@
     "connector": "rest",
     "options": {
       "headers": {
-        "accept": "application/json",
+        "Predix-Zone-Id": "00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0",
         "content-type": "application/json"
       },
       "strictSSL": true
@@ -134,12 +144,15 @@
           "method": "POST",
           "url": "https://solar-analytics-framework.predix-analytics-ui.run.aws-usw02-pr.ice.predix.io/api/catalog/analytics/aa7bbd17-23c0-4bf1-8a53-3ddd13267f68/execution",
           "headers": {
-            "Date": "mockDate",
+            "Data": "mockDate",
             "Authorization": "mockAuth"
-          }
+          },
+          "data": "{data}"
         },
         "functions": {
-          "executePhotovoltaic": []
+          "executePhotovoltaic": [
+            "data"
+          ]
         }
       },
       {
@@ -149,10 +162,13 @@
           "headers": {
             "Date": "mockDate",
             "Authorization": "mockAuth"
-          }
+          },
+          "data": "{data}"
         },
         "functions": {
-          "executeCustom": []
+          "executeCustom": [
+            "data"
+          ]
         }
       }
     ]
