@@ -26,6 +26,45 @@
     "Capacity": {
       "type": "number",
       "required": true
+    },
+    "ModuleEfficiency": {
+      "type": "number"
+    },
+    "TemperatureCoefficientIsc": {
+      "type": "number"
+    },
+    "NOCT": {
+      "type": "number"
+    },
+    "ArrayLosses": {
+      "type": "number"
+    },
+    "InverterEfficiency": {
+      "type": "number"
+    },
+    "InverterLosses": {
+      "type": "number"
+    },
+    "Large": {
+      "type": "number",
+      "required": true
+    },
+    "Width": {
+      "type": "number",
+      "required": true
+    },
+    "Height": {
+      "type": "number",
+      "required": true
+    },
+    "Weight": {
+      "type": "number"
+    },
+    "Connector": {
+      "type": "string"
+    },
+    "CellsConnection": {
+      "type": "number"
     }
   },
   "validations": [],

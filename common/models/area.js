@@ -5,50 +5,41 @@ var app = require('../../server/server');
 //Import GoogleMapsAPI as a datasource
 var MapsAPI = app.datasources.GoogleMaps;
 var nasaData = app.datasources.NASA;
-
-function array2DToJSON(a, p, nl) {
-      var i, j, s = '[{"' + p + '":{';
-      nl = nl || '';
-      for (i = 0; i < a.length; ++i) {
-        s += nl + arrayToJSON(a[i]);
-        if (i < a.length - 1)
-          s += ',';
-      }
-      s += nl + '}}]';
-      return s;
-    }
-    function arrayToJSON(a, p) {
-      var i, s = '';
-      for (i = 0; i < a.length; ++i) {
-        if (typeof a[i] == 'string')
-          s += '"' + a[i] + '"';
-        else  // assume number type
-          s += a[i];
-        if (i < a.length - 1)
-          s += ':';
-      }
-      s += '';
-      if (p)
-        return '{"' + p + '":' + s + '}';
-      return s;
-    }
 function deleteTags($,number){
   if (number === 2) {
     $('table').eq(number).find('tr').eq(1).find('td').eq(0).remove();
-    $('table').eq(number).find('tr').eq(0).find('td').eq(0).remove();
-    $('table').eq(number).find('tr').eq(0).find('td').eq(-1).remove();
-    $('table').eq(number).find('tr').eq(1).find('td').eq(-1).remove();
+    $('table').eq(number).find('tr').eq(0).remove();
+    for(var i= 0; i<12; i++){
+      $('table').eq(number).find('tr').eq(0).find('td').eq(0).remove();
+    }
   }
   else {
     $('table').eq(number).find('caption').remove();//delete tags that aren't needed
     $('table').eq(number).find('br').remove();//delete tags that aren't needed
+    $('table').eq(number).find('tr').eq(0).remove();
     $('table').eq(number).find('tr').eq(0).find('td').eq(0).remove();
-    $('table').eq(number).find('tr').eq(1).find('td').eq(0).remove();
     $('table').eq(number).find('tr').eq(0).find('td').eq(-1).remove();
     $('table').eq(number).find('tr').eq(1).find('td').eq(-1).remove();
   }
 }
-
+function convertToArray(matrix, type){
+  var result = [];
+  if(type === 1){
+    for (var i = 0; i< 1; i++) {
+      for (var j =0; i< 12; i++) {
+        result.push(parseFloat(matrix[i][j]));
+      }
+    }
+  }
+  else if(type === 2){
+    for (var i = 0; i< 1; i++) {
+      for (var j =0; i< 1; i++) {
+        result = parseFloat(matrix[i][j]);
+      }
+    }
+  }
+  return result;
+}
 module.exports = function(Area) {
   //Add remote hook to trigger events when Area will be saved
   Area.observe('before save', function getElevation(ctx, next) {
@@ -58,7 +49,7 @@ module.exports = function(Area) {
       //If elevation is received then call nasa API
       console.log(value);
       nasaData.getNASAData("19.49", "-99.157").then(function(body){
-
+        var Materiales = app.models.Material;
         var $ = cheerio.load(body);//load response in cheerio
         cheerioTableparser($);//load table parser
         for (var i = 0; i < 8; i++) {
@@ -108,19 +99,65 @@ module.exports = function(Area) {
         //Air Temperature Table
         deleteTags($,3);
         for (var i = 0; i < 2; i++) {
-          $('table').eq(3).find('tr').eq(2).remove();
+          $('table').eq(3).find('tr').eq(1).remove();
         }
-        console.log("terminado");
         var airTemp = $('table').eq(3).parsetable();
-        console.log(radiation);
-        console.log(tilt);
-        console.log(airTemp);
-        console.log(max);
-        console.log(min);
-        console.log(azimuth);
+
+        radiation = convertToArray(radiation,1);
+        tilt = convertToArray(tilt,2);
+        airTemp = convertToArray(airTemp,1);
+        //create object to convert to JSON for analytics, fill it with analytics fields
+        var data = {
+          data:{
+            plant_data: {
+              tilt: tilt,
+              system_capacity: 1000,
+              array_azimuth: azimuth
+            },
+            system_data:{
+              inverter_data:{
+                inverter_efficiency:"" ,
+                inverter_losses: ""
+              },
+              pv_module_data:{
+                array_losses: "",
+                pv_module_efficiency: "",
+                noct: "",
+                temperature_coefficient: ""
+              }
+            },
+            resource_data:{
+              latitude: 19.49,
+              air_temperature: airTemp,
+              daily_solar_radiation: radiation
+            }
+          },
+          config:{}
+        };
+        //make it a string and parse it
+        data = JSON.stringify(data);
+        data = JSON.parse(data);
+        //complete analytics JSON with values of the Database for inverters
+        Materiales.find({"fields":{"InverterEfficiency":"true","InverterLosses":"true"},"where":{"Type":2}}, function (err,material) {
+          if (err) {
+            cb(err);
+          }
+          console.log(material[0].InverterEfficiency);
+            data.data.system_data.inverter_data.inverter_efficiency = material[0].InverterEfficiency;
+            data.data.system_data.inverter_data.inverter_losses = material[0].InverterLosses;
+        });
+        //complete analytics JSON with values of the Database for solar panels
+        Materiales.find({"fields":{"ModuleEfficiency":"true","TemperatureCoefficientIsc":"true","NOCT":"true", "ArrayLosses":"true"},"where":{"Type":1}}, function (err,material) {
+          if (err) {
+            cb(err);
+          }
+            data.data.system_data.pv_module_data.pv_module_efficiency = material[0].ModuleEfficiency;
+            data.data.system_data.pv_module_data.temperature_coefficient = material[0].TemperatureCoefficientIsc;
+            data.data.system_data.pv_module_data.noct = material[0].NOCT;
+            data.data.system_data.pv_module_data.array_losses = material[0].ArrayLosses;
+        });
         next();
       });
-        //next();
       });
     },
     function (reason) {

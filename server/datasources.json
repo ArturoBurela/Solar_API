@@ -3,7 +3,6 @@
     "name": "SolarDB",
     "connector": "memory"
   },
-
   "GoogleMaps": {
     "name": "GoogleMaps",
     "baseURL": "https://maps.googleapis.com/maps/api/",
@@ -93,23 +92,26 @@
       "accepts": "text/html",
       "content-type": "text/html"
     },
-    "operations":[
+    "operations": [
       {
         "template": {
           "method": "GET",
           "url": "https://eosweb.larc.nasa.gov/cgi-bin/sse/grid.cgi",
           "query": {
-            "num":"081110",
-            "hgt":"100",
-            "veg":"17",
-            "p":"grid_id",
-            "step":"2",
+            "num": "081110",
+            "hgt": "100",
+            "veg": "17",
+            "p": "grid_id",
+            "step": "2",
             "lat": "{latitude}",
             "lon": "{longitude}"
           }
         },
         "functions": {
-          "getNASAData": ["latitude", "longitude"]
+          "getNASAData": [
+            "latitude",
+            "longitude"
+          ]
         }
       }
     ]
