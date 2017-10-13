@@ -5,8 +5,16 @@ module.exports = function(Project) {
   /* Project.observe('before save', function getElevation(ctx, next) {
 
   }); */
-  var Singleton = (function() {
-    var instance;
+
+  Project.instance = null;
+
+  /*Project.instance = NULL;
+
+  Project.createInstance = new function(msg, cb) {
+
+  }
+
+  Project.Singleton = function(msg, cb) {
 
     function createInstance() {
       var object = new Object('I am the instance');
@@ -21,12 +29,12 @@ module.exports = function(Project) {
         return instance;
       },
     };
-  })();
+      cb(null, 'Greetings... ' + msg);
+    }
 
-  function run() {
-    var instance1 = Singleton.getInstance();
-    var instance2 = Singleton.getInstance();
+  Project.run = function(msg, cb) {
+    var instance1 = Project.Singleton.getInstance("l");
+    var instance2 = Project.Singleton.getInstance("l");
     console.log('Same instance? ' + (instance1 === instance2));
-  }
-  run();
+  }*/
 };
