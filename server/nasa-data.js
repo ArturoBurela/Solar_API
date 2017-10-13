@@ -132,14 +132,14 @@ nasaConnector.observe('after execute', function getNASAData(ctx, next) {
       config:{}
     };
     //make it a string and parse it
-    data = JSON.stringify(data);
-    data = JSON.parse(data);
+    //data = JSON.stringify(data);
+    //data = JSON.parse(data);
     //complete analytics JSON with values of the Database for inverters
     Materiales.find({"fields":{"InverterEfficiency":"true","InverterLosses":"true"},"where":{"Type":2}}, function (err,material) {
       if (err) {
         cb(err);
       }
-      console.log(material[0].InverterEfficiency);
+      //console.log(material[0].InverterEfficiency);
       data.data.system_data.inverter_data.inverter_efficiency = material[0].InverterEfficiency;
       data.data.system_data.inverter_data.inverter_losses = material[0].InverterLosses;
     });

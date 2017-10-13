@@ -5,6 +5,7 @@ var app = require('../../server/server');
 //Import GoogleMapsAPI as a datasource
 var MapsAPI = app.datasources.GoogleMaps;
 var nasaData = app.datasources.NASA;
+var photovoltaicAnalytics = app.datasources.SolarAnalytics;
 function deleteTags($,number){
   if (number === 2) {
     $('table').eq(number).find('tr').eq(1).find('td').eq(0).remove();
@@ -111,7 +112,7 @@ module.exports = function(Area) {
           data:{
             plant_data: {
               tilt: tilt,
-              system_capacity: 1000,
+              system_capacity: 0.25497,
               array_azimuth: azimuth
             },
             system_data:{
@@ -135,8 +136,8 @@ module.exports = function(Area) {
           config:{}
         };
         //make it a string and parse it
-        data = JSON.stringify(data);
-        data = JSON.parse(data);
+        ///data = JSON.stringify(data);
+        //data = JSON.parse(data);
         //complete analytics JSON with values of the Database for inverters
         Materiales.find({"fields":{"InverterEfficiency":"true","InverterLosses":"true"},"where":{"Type":2}}, function (err,material) {
           if (err) {
@@ -146,6 +147,7 @@ module.exports = function(Area) {
             data.data.system_data.inverter_data.inverter_efficiency = material[0].InverterEfficiency;
             data.data.system_data.inverter_data.inverter_losses = material[0].InverterLosses;
         });
+        console.log(JSON.stringify(data));
         //complete analytics JSON with values of the Database for solar panels
         Materiales.find({"fields":{"ModuleEfficiency":"true","TemperatureCoefficientIsc":"true","NOCT":"true", "ArrayLosses":"true"},"where":{"Type":1}}, function (err,material) {
           if (err) {
@@ -156,12 +158,46 @@ module.exports = function(Area) {
             data.data.system_data.pv_module_data.noct = material[0].NOCT;
             data.data.system_data.pv_module_data.array_losses = material[0].ArrayLosses;
         });
+
+        var request = require('request');
+        var options = {
+          method: 'POST',
+          url: 'https://8dc085ff-272e-4cac-901e-15c3f90233ee.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token',
+          headers:
+          {
+            'cache-control': 'no-cache',
+            'content-type': 'application/x-www-form-urlencoded',
+            authorization: 'Basic YWZfcnQ6cGFzc3dvcmQ=',
+          },
+      // eslint-disable-next-line camelcase
+          form: {client_id: 'af_rt', grant_type: 'client_credentials'},
+        };
+        request(options, function(error, response, body) {
+          if (error) throw new Error(error);
+          var UAAresponse = JSON.parse(body);
+        options = {
+          method: 'POST',
+          url: 'https://solar-analytics-framework.predix-analytics-ui.run.aws-usw02-pr.ice.predix.io/api/catalog/analytics/aa7bbd17-23c0-4bf1-8a53-3ddd13267f68/execution',
+          headers:
+          {
+            'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
+            'content-type': 'application/json',
+            authorization: 'Bearer ' + UAAresponse.access_token,
+          },
+          json: data,
+        };
+        request(options, function(error, response, body) {
+          if (error) throw new Error(error);
+          console.log(body);
+        });
         next();
       });
-      });
+      //});
     },
     function (reason) {
       console.log(reason);
       next();
     });
+  });
+});
 };
