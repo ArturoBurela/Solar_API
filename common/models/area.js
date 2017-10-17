@@ -136,28 +136,38 @@ module.exports = function(Area) {
           },
           config:{}
         };
-        //make it a string and parse it
-        ///data = JSON.stringify(data);
-        //data = JSON.parse(data);
+
         //complete analytics JSON with values of the Database for inverters
         Materiales.find({"fields":{"InverterEfficiency":"true","InverterLosses":"true"},"where":{"Type":2}}, function (err,material) {
           if (err) {
             cb(err);
           }
-          console.log(material[0].InverterEfficiency);
-            data.data.system_data.inverter_data.inverter_efficiency = material[0].InverterEfficiency;
-            data.data.system_data.inverter_data.inverter_losses = material[0].InverterLosses;
+          if (material.length>0) {
+              console.log(material[0].InverterEfficiency);
+              data.data.system_data.inverter_data.inverter_efficiency = material[0].InverterEfficiency;
+              data.data.system_data.inverter_data.inverter_losses = material[0].InverterLosses;
+          }
+          else {
+            console.log("No hay inversores en la base de datos");
+            return;
+          }
+
         });
-        console.log(JSON.stringify(data));
         //complete analytics JSON with values of the Database for solar panels
         Materiales.find({"fields":{"ModuleEfficiency":"true","TemperatureCoefficientIsc":"true","NOCT":"true", "ArrayLosses":"true"},"where":{"Type":1}}, function (err,material) {
           if (err) {
             cb(err);
           }
+          if(material.length>0){
             data.data.system_data.pv_module_data.pv_module_efficiency = material[0].ModuleEfficiency;
             data.data.system_data.pv_module_data.temperature_coefficient = material[0].TemperatureCoefficientIsc;
             data.data.system_data.pv_module_data.noct = material[0].NOCT;
             data.data.system_data.pv_module_data.array_losses = material[0].ArrayLosses;
+          }
+          else {
+            console.log("No hay paneles en la base de datos");
+            return;
+          }
         });
 
         var request = require('request');
@@ -168,36 +178,37 @@ module.exports = function(Area) {
           {
             'cache-control': 'no-cache',
             'content-type': 'application/x-www-form-urlencoded',
-            authorization: 'Basic YWZfcnQ6cGFzc3dvcmQ=',
+            'Authorization': 'Basic YWZfcnQ6cGFzc3dvcmQ=',
           },
       // eslint-disable-next-line camelcase
-          form: {client_id: 'af_rt', grant_type: 'client_credentials'},
+          form: {client_id: 'af_rt', grant_type: 'client_credentials'}
         };
         request(options, function(error, response, body) {
           if (error) throw new Error(error);
           var UAAresponse = JSON.parse(body);
         options = {
           method: 'POST',
-          url: 'https://solar-analytics-framework.predix-analytics-ui.run.aws-usw02-pr.ice.predix.io/api/catalog/analytics/aa7bbd17-23c0-4bf1-8a53-3ddd13267f68/execution',
+          url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/aa7bbd17-23c0-4bf1-8a53-3ddd13267f68/execution',
           headers:
           {
             'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
             'content-type': 'application/json',
-            authorization: 'Bearer ' + UAAresponse.access_token,
+            'authorization': 'Bearer s' + UAAresponse.access_token,
           },
-          json: data,
+          json: data
         };
+        console.log(JSON.stringify(data));
         request(options, function(error, response, body) {
           if (error) throw new Error(error);
           console.log(body);
         });
-        SA.executePhotovoltaic(data).then(function(value) {
+        /*SA.executePhotovoltaic(data).then(function(value) {
           console.log("From datasource\n",value);
         }, function(reason) {
           // If elevation cant be obtained respond with error
           console.log(reason);
         });
-        next();
+        next();*/
       });
       //});
     },
