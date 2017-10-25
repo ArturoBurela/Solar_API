@@ -169,7 +169,6 @@ module.exports = function(Area) {
             return;
           }
         });
-
         var request = require('request');
         var options = {
           method: 'POST',
@@ -178,7 +177,7 @@ module.exports = function(Area) {
           {
             'cache-control': 'no-cache',
             'content-type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic YWZfcnQ6cGFzc3dvcmQ=',
+            'Authorization': 'Basic YWZfcnQ6cGFzc3dvcmQ='
           },
       // eslint-disable-next-line camelcase
           form: {client_id: 'af_rt', grant_type: 'client_credentials'}
@@ -193,7 +192,7 @@ module.exports = function(Area) {
           {
             'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
             'content-type': 'application/json',
-            'authorization': 'Bearer s' + UAAresponse.access_token,
+            'authorization': 'Bearer ' + UAAresponse.access_token
           },
           json: data
         };
@@ -207,8 +206,8 @@ module.exports = function(Area) {
         }, function(reason) {
           // If elevation cant be obtained respond with error
           console.log(reason);
-        });
-        next();*/
+        });*/
+        next();
       });
       //});
     },
