@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function(app) {
-  /*
   var SA = app.datasources.SolarAnalytics;
   var request = require('request');
   // Set REST API Blobstore
@@ -52,5 +51,5 @@ module.exports = function(app) {
   SACon.observe('before execute', function(ctx, next) {
     console.log(ctx);
     next();
-  }); */
+  });
 };
