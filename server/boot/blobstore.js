@@ -46,6 +46,13 @@ module.exports = function(app) {
     // If elevation cant be obtained respond with error
     console.log(reason);
   });
+  let photoFoo = "asdnsaofnodsnafnsdnfknlskndlfknlksdnfklniw";
+  BlobStore.uploadPhoto(photoFoo).then(function(value) {
+    console.log(value);
+  }, function(reason) {
+    // If elevation cant be obtained respond with error
+    console.log(reason);
+  });
   var SACon = SA.connector;
 // Set the before execute process
   SACon.observe('before execute', function(ctx, next) {
