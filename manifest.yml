@@ -2,7 +2,7 @@ applications:
 - name: predix-solar-api
   memory: 512M
   stack: cflinuxfs2
-  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
+  buildpack: https://github.com/ArturoBurela/SolarCustomBuildpack
   command:  node .
   services:
     - PostgreSQL
