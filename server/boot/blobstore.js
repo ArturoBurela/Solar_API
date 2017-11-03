@@ -46,7 +46,7 @@ module.exports = function(app) {
     // If elevation cant be obtained respond with error
     console.log(reason);
   });
-  let photoFoo = "asdnsaofnodsnafnsdnfknlskndlfknlksdnfklniw";
+  var photoFoo = 'asdasds';
   BlobStore.uploadPhoto(photoFoo).then(function(value) {
     console.log(value);
   }, function(reason) {
