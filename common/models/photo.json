@@ -7,9 +7,9 @@
     "validateUpsert": true
   },
   "properties": {
-    "picture": {
+    "image": {
       "type": "any",
-      "required": true
+      "required": false
     }
   },
   "validations": [],

@@ -89,7 +89,7 @@ module.exports = function(app) {
     if (err) {
       throw err;
     } else {
-      console.log('Performed automigration');
+      console.log('Performed autoupdate');
       // crear Role
       Role.find({name: 'admin'}, function(err, results) { // Encontrar el Role
         if (err) {
