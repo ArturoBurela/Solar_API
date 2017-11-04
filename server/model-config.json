@@ -52,7 +52,7 @@
     "public": true
   },
   "Photo": {
-    "dataSource": "BlobStore",
+    "dataSource": "SolarDB",
     "public": true
   },
   "Result": {

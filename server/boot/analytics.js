@@ -20,7 +20,7 @@ module.exports = function(app) {
     request(options, function(error, response, body) {
       if (error) throw new Error(error);
       var UAAresponse = JSON.parse(body);
-      console.log(UAAresponse);
+      // console.log(UAAresponse);
       accessToken = UAAresponse.access_token;
       var schedule = require('node-schedule');
       var date = new Date(2012, 11, 21, 5, 30, 0);
@@ -59,7 +59,7 @@ module.exports = function(app) {
       'content-type': 'application/json',
       'authorization': 'Bearer ' + accessToken,
     };
-    console.log(ctx);
+    // console.log(ctx);
     next();
   });
 };

@@ -39,8 +39,8 @@ module.exports = function(app) {
   }); */
   /* var lowThresh = 0;
   var highThresh = 100;
-  var nIters = 8;
-  var minArea = 200;
+  var nIters = 2;
+  var minArea = 2000;
 
   var BLUE  = [255, 0, 0]; // B, G, R
   var RED   = [0, 0, 255]; // B, G, R
@@ -66,7 +66,7 @@ module.exports = function(app) {
       if (contours.area(i) < minArea) continue;
 
       var arcLength = contours.arcLength(i, true);
-      contours.approxPolyDP(i, 0.01 * arcLength, true);
+      contours.approxPolyDP(i, 0.001 * arcLength, true);
 
       switch (contours.cornerCount(i)) {
         case 3:

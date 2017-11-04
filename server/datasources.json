@@ -8,7 +8,7 @@
     "name": "SolarDB",
     "user": "MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M",
     "connector": "postgresql"
-},
+  },
   "GoogleMaps": {
     "name": "GoogleMaps",
     "baseURL": "https://maps.googleapis.com/maps/api/",
@@ -60,47 +60,6 @@
         "functions": {
           "getElevation": [
             "locations"
-          ]
-        }
-      }
-    ]
-  },
-  "BlobStore": {
-    "name": "BlobStore",
-    "baseURL": "https://bucket-16909670-8588-4793-a261-2ffc3a64d3c4.s3-us-west-2.amazonaws.com",
-    "crud": false,
-    "connector": "rest",
-    "options": {
-      "strictSSL": true
-    },
-    "operations": [
-      {
-        "template": {
-          "method": "GET",
-          "url": "https://bucket-16909670-8588-4793-a261-2ffc3a64d3c4.s3-us-west-2.amazonaws.com/",
-          "headers": {
-            "Date": "mockDate",
-            "Authorization": "mockAuth"
-          }
-        },
-        "functions": {
-          "list": []
-        }
-      },
-      {
-        "template": {
-          "method": "POST",
-          "url": "https://bucket-16909670-8588-4793-a261-2ffc3a64d3c4.s3-us-west-2.amazonaws.com/",
-          "headers": {
-            "Data": "mockDate",
-            "Authorization": "mockAuth",
-            "Content-Length": -1
-          },
-          "data": "{data}"
-        },
-        "functions": {
-          "uploadPhoto": [
-            "data"
           ]
         }
       }

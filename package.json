@@ -11,6 +11,7 @@
     "posttest": "npm run lint && nsp check"
   },
   "dependencies": {
+    "aws-sdk": "^2.145.0",
     "cheerio": "^1.0.0-rc.2",
     "cheerio-tableparser": "^1.0.1",
     "compression": "^1.0.3",
