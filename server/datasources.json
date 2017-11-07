@@ -165,7 +165,7 @@
       {
         "template": {
           "method": "POST",
-          "url": "https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/939d3928-e109-458d-81bd-4e1a912ba473/execution",
+          "url": "https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/e2b57733-f6dc-458a-91bc-c085c0f8232d/execution",
           "headers": {
             "Date": "mockDate",
             "Authorization": "mockAuth"

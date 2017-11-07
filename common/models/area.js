@@ -47,7 +47,7 @@ module.exports = function(Area) {
   Area.observe('before save', function getElevation(ctx, next) {
     console.log(ctx.instance);
     //Get the elevation from google
-    MapsAPI.getElevation("19.49,-99.157").then(function(value) {
+    /*MapsAPI.getElevation("19.49,-99.157").then(function(value) {
       //If elevation is received then call nasa API
       console.log(value);
       nasaData.getNASAData("19.49", "-99.157").then(function(body){
@@ -138,7 +138,7 @@ module.exports = function(Area) {
         };
 
         //complete analytics JSON with values of the Database for inverters
-        Materiales.find({"fields":{"InverterEfficiency":"true","InverterLosses":"true"},"where":{"Type":2}}, function (err,material) {
+        /*Materiales.find({"fields":{"InverterEfficiency":"true","InverterLosses":"true"},"where":{"Type":2}}, function (err,material) {
           if (err) {
             cb(err);
           }
@@ -216,5 +216,5 @@ module.exports = function(Area) {
       next();
     });
   });
-});
+//});
 };

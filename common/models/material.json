@@ -101,6 +101,15 @@
     },
     "CellsConnection": {
       "type": "number"
+    },
+    "Voc": {
+      "type": "number"
+    },
+    "Isc": {
+      "type": "number"
+    },
+    "Pmp": {
+      "type": "number"
     }
   },
   "validations": [],
