@@ -20,3 +20,5 @@ env:
     AWS_SECRET_ACCESS_KEY: vUnSsLZm8F/f+V2cBqFL+cCESDYBhnorZ9heHLLD
     AWS_BLOBSTORE_BUCKET: bucket-16909670-8588-4793-a261-2ffc3a64d3c4
     AWS_BLOBSTORE_HOST: s3-us-west-2.amazonaws.com
+    LD_LIBRARY_PATH: /home/vcap/app/.cloudfoundry/0/opencv-compiled-2.4.9/lib
+    PATH: $PATH:/home/vcap/app/.cloudfoundry/0/opencv-compiled-2.4.9/bin
