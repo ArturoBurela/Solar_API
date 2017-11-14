@@ -45,9 +45,9 @@ function convertToArray(matrix, type){
 module.exports = function(Area) {
   //Add remote hook to trigger events when Area will be saved
   Area.observe('before save', function getElevation(ctx, next) {
-    console.log(ctx.instance);
+  /*  console.log(ctx.instance);
     //Get the elevation from google
-    /*MapsAPI.getElevation("19.49,-99.157").then(function(value) {
+    //MapsAPI.getElevation("19.49,-99.157").then(function(value) {
       //If elevation is received then call nasa API
       console.log(value);
       nasaData.getNASAData("19.49", "-99.157").then(function(body){
@@ -104,7 +104,6 @@ module.exports = function(Area) {
           $('table').eq(3).find('tr').eq(1).remove();
         }
         var airTemp = $('table').eq(3).parsetable();
-
         radiation = convertToArray(radiation,1);
         tilt = convertToArray(tilt,2);
         airTemp = convertToArray(airTemp,1);

@@ -7,7 +7,7 @@
     "validateUpsert": true
   },
   "properties": {
-    "Name": {
+    "ModelName": {
       "type": "string",
       "required": true
     },
@@ -26,26 +26,13 @@
       "type": "string",
       "required": true
     },
-    "Capacity": {
-      "type": "number",
-      "required": true,
-      "postgresql": {
-        "dataType": "DOUBLE PRECISION"
-      }
-    },
     "ModuleEfficiency": {
       "type": "number",
       "postgresql": {
         "dataType": "DOUBLE PRECISION"
       }
     },
-    "TemperatureCoefficientIsc": {
-      "type": "number",
-      "postgresql": {
-        "dataType": "DOUBLE PRECISION"
-      }
-    },
-    "NOCT": {
+    "NOCTW": {
       "type": "number",
       "postgresql": {
         "dataType": "DOUBLE PRECISION"
@@ -102,14 +89,72 @@
     "CellsConnection": {
       "type": "number"
     },
+    "maximumSystemVoltage": {
+      "type": "number",
+      "required": false,
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
+    },
     "Voc": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "Isc": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     },
     "Pmp": {
-      "type": "number"
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
+    },
+    "Vmp": {
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
+    },
+    "Imp": {
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
+    },
+    "tempCoeffVoc": {
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
+    },
+    "inverterMaxPowerCD": {
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
+    },
+    "inverterMaxPowerCA": {
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
+    },
+    "inverterMaxCurrentCD": {
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
+    },
+    "inverterNominalVoltageCD": {
+      "type": "number",
+      "postgresql": {
+        "dataType": "DOUBLE PRECISION"
+      }
     }
   },
   "validations": [],
