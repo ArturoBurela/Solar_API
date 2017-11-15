@@ -2,13 +2,13 @@
 module.exports = function(app) {
   console.log(process.env);
   console.log("PŔINTING");
-  const testFolder = process.env.DEPS_DIR+'/0/opencv-compiled-2.4.9';
+  //const testFolder = process.env.DEPS_DIR+'/0/opencv-compiled-2.4.9';
 const fs = require('fs');
 
 
-fs.readdirSync(testFolder).forEach(file => {
+/*fs.readdirSync(testFolder).forEach(file => {
   console.log(file);
-})
+})*/
 //console.log("bin");
 const testFolder2 = process.env.DEPS_DIR+'/0/bin/lib';
 /*fs.readdir(testFolder2, (err, files) => {

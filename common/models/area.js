@@ -213,7 +213,6 @@ module.exports = function(Area) {
     function (reason) {
       console.log(reason);
       next();
-    });
-  });
-//});
+    //});
+  //});
 };

@@ -38,12 +38,6 @@
         "dataType": "DOUBLE PRECISION"
       }
     },
-    "ArrayLosses": {
-      "type": "number",
-      "postgresql": {
-        "dataType": "DOUBLE PRECISION"
-      }
-    },
     "InverterEfficiency": {
       "type": "number",
       "postgresql": {
@@ -77,21 +71,17 @@
         "dataType": "DOUBLE PRECISION"
       }
     },
-    "Weight": {
-      "type": "number",
-      "postgresql": {
-        "dataType": "DOUBLE PRECISION"
-      }
-    },
     "Connector": {
       "type": "string"
+    },
+    "numberOfPhases": {
+      "type": "number"
     },
     "CellsConnection": {
       "type": "number"
     },
     "maximumSystemVoltage": {
       "type": "number",
-      "required": false,
       "postgresql": {
         "dataType": "DOUBLE PRECISION"
       }
