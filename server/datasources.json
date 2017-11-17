@@ -116,7 +116,7 @@
           "method": "POST",
           "url": "https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/aa7bbd17-23c0-4bf1-8a53-3ddd13267f68/execution",
           "headers": {
-            "Data": "mockDate",
+            "Data": "mockData",
             "Authorization": "mockAuth"
           },
           "data": "{data}"
@@ -130,9 +130,9 @@
       {
         "template": {
           "method": "POST",
-          "url": "https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/e2b57733-f6dc-458a-91bc-c085c0f8232d/execution",
+          "url": "https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/86a45079-21ce-4c65-a5e1-2329a18016fb/execution",
           "headers": {
-            "Date": "mockDate",
+            "Data": "mockData",
             "Authorization": "mockAuth"
           },
           "data": "{data}"
