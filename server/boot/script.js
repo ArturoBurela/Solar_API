@@ -10,7 +10,7 @@ const fs = require('fs');
   console.log(file);
 })*/
 //console.log("bin");
-const testFolder2 = process.env.DEPS_DIR+'/0/bin/lib';
+//const testFolder2 = process.env.DEPS_DIR+'/0/bin/lib';
 /*fs.readdir(testFolder2, (err, files) => {
 files.forEach(file => {
   console.log(file);

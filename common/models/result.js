@@ -16,9 +16,9 @@ module.exports = function(Result) {
   var dataPhotovoltaicAnalytic = {
     data:{
       plant_data: {
-        tilt: tilt,
+        tilt: "",
         system_capacity: "",
-        array_azimuth: azimuth
+        array_azimuth: ""
       },
       system_data:{
         inverter_data:{
@@ -34,8 +34,8 @@ module.exports = function(Result) {
       },
       resource_data:{
         latitude: "",
-        air_temperature: airTemp,
-        daily_solar_radiation: radiation
+        air_temperature: "",
+        daily_solar_radiation: ""
       }
     },
     config:{}
@@ -88,4 +88,6 @@ module.exports = function(Result) {
     console.log(body);
   });
 
-};
+});
+
+}
