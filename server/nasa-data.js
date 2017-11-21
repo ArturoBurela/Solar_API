@@ -1,3 +1,4 @@
+var cheerio = require('cheerio'), cheerioTableparser = require('cheerio-tableparser');
 var app = require('../../server/server');
 var nasaData = app.datasources.NASA;
 var nasaConnector = nasaData.connector;

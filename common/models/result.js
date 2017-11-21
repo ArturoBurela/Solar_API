@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(Result) {
-  var dataROI = {
+/*  var dataROI = {
     energiaGenerada:"",
     distintosPaneles:"",
     distintosInversores:"",
@@ -80,14 +80,14 @@ module.exports = function(Result) {
       'content-type': 'application/json',
       'authorization': 'Bearer ' + UAAresponse.access_token
     },
-    json: data
+    json: dataPhotovoltaicAnalytic
   };
-  console.log(JSON.stringify(data));
+  console.log(JSON.stringify(dataPhotovoltaicAnalytic));
   request(options, function(error, response, body) {
     if (error) throw new Error(error);
     console.log(body);
   });
 
-});
+});*/
 
 }
