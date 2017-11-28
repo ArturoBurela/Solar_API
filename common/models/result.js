@@ -5,6 +5,7 @@ var cheerioTableparser = require('cheerio-tableparser');
 var app = require('../../server/server');
 var nasaData = app.datasources.NASA;
 var nasaConnector = nasaData.connector;
+var request = require('request');
 //var Alternative = app.models.Alternative;
 var dataAreaDelimitationAnalytic=
 {
@@ -127,6 +128,104 @@ module.exports = function(Result) {
     http:{path: '/createAlternative', verb: 'get'},
     returns:{arg:'latitude', type: 'number'}
   });
+//Get NASA data before start to get data from PostgreSQL and use analytics
+  Result.beforeRemote('computeResult', function (ctx, modelInstance,next) {
+    var Area = app.models.Area;
+    var Materiales = app.models.Material;
+
+    Area.find({"fields":{"center":"true", "projectId":"true"},"where":{"id":ctx.req.query.idArea}}, function(err, area){
+      if (err) {
+        throw err;
+      }
+      area = JSON.stringify(area[0]);
+      area = JSON.parse(area);
+      console.log(area.center.lat.toString());
+      console.log(area.center.lng.toString());
+      var options = {
+      method: 'GET',
+      url: 'https://eosweb.larc.nasa.gov/cgi-bin/sse/grid.cgi',
+      qs: {
+        num: "081110",
+        hgt:"100",
+        veg:"17",
+        p:"grid_id",
+        step:"2",
+        lat: area.center.lat.toString(),
+        lon: area.center.lng.toString()
+        }
+      };
+      request(options, function(error, response, body) {
+      if (error)
+      {
+        radiation = [4.78,5.73,6.55,6.50,6.24,5.60,5.51,5.42,4.95,4.92,4.81,4.49];
+        airTemp = [12.8,14.4,16.7,18.8,19.5,18.5,18.0,18.0,17.3,15.9,14.4,13.0];
+        dataPhotovoltaicAnalytic.data.resource_data.daily_solar_radiation = radiation;
+        dataPhotovoltaicAnalytic.data.resource_data.air_temperature = airTemp;
+        //throw new Error(error);
+      }
+      const $ = cheerio.load(body);//load response in cheerio
+      cheerioTableparser($);//load table parser
+      for (var i = 0; i < 8; i++) {
+          $('table').eq(0).remove();//delete all tables that Won't be used
+      }
+      for (var i = 0; i < 21; i++) {
+        $('table').eq(1).remove();//delete all tables that Won't be used
+      }
+      for (var i = 0; i < 14 ; i++) {
+        $('table').eq(3).remove();
+      }
+      for (var i = 0; i < $('table').length; i++) {
+        $('table').eq(4).remove();
+      }
+      deleteTags($,0);
+      var radiation = $('table').eq(0).parsetable();
+
+      //Max value from azimuth table
+      var max = 0;
+      for(var i=0; i< 25; i++){
+        $('table').eq(1).find('tr').eq(i).find('td').eq(0).remove();
+      }
+      $('table').eq(1).find('td').each(function(i, element)
+      {
+        var a = parseFloat( $(element).text() );
+        if (a > max) max = a;
+      });
+      //Min value from azimuth table
+      var min = Number.MAX_VALUE;
+      $('table').eq(1).find('tr td').each(function(i, element)
+      {
+        var a = parseFloat($(element).text());
+        if (a < min && a != 0) min = a;
+      });
+      var azimuth = (max + min) / 2;
+      //Tilt Table
+      $('table').eq(2).find('caption').remove();
+      $('table').eq(2).find('br').remove();
+      for (var i = 1; i < 7; i++) {
+        $('table').eq(2).find('tr').eq(1).remove();
+      }
+      for (var i = 1; i < 5; i++) {
+        $('table').eq(2).find('tr').eq(2).remove();
+      }
+      deleteTags($,2);
+      var tilt=$('table').eq(2).parsetable();
+      //Air Temperature Table
+      deleteTags($,3);
+      for (var i = 0; i < 2; i++) {
+        $('table').eq(3).find('tr').eq(1).remove();
+      }
+      var airTemp = $('table').eq(3).parsetable();
+      console.log(radiation);
+      radiation = convertToArray(radiation,1);
+      console.log(airTemp);
+      airTemp = convertToArray(airTemp,1);
+      dataPhotovoltaicAnalytic.data.resource_data.daily_solar_radiation = radiation;
+      dataPhotovoltaicAnalytic.data.resource_data.air_temperature = airTemp;
+      next();
+    });
+  });
+});
+
   Result.computeResult = function (id, cb) {
     var Area = app.models.Area;
     var Material = app.models.Material;
@@ -147,78 +246,6 @@ module.exports = function(Result) {
       dataPhotovoltaicAnalytic.data.plant_data.array_azimuth = azimuth;
       dataPhotovoltaicAnalytic.data.plant_data.tilt = area.center.lat;
       dataPhotovoltaicAnalytic.data.resource_data.latitude = area.center.lat;
-      nasaConnector.observe('after execute', function getNASAData(ctx, next) {
-        nasaData.getNASAData(area.center.lat, area.center.lng).then(function(body){
-
-            var $ = cheerio.load(body);//load response in cheerio
-            cheerioTableparser($);//load table parser
-            for (var i = 0; i < 8; i++) {
-              $('table').eq(0).remove();//delete all tables that Won't be used
-            }
-            for (var i = 0; i < 21; i++) {
-              $('table').eq(1).remove();//delete all tables that Won't be used
-            }
-            for (var i = 0; i < 14 ; i++) {
-              $('table').eq(3).remove();
-            }
-            for (var i = 0; i < $('table').length; i++) {
-              $('table').eq(4).remove();
-            }
-            deleteTags($,0);
-            var radiation = $('table').eq(0).parsetable();
-
-            //Max value from azimuth table
-            var max = 0;
-            for(var i=0; i< 25; i++){
-              $('table').eq(1).find('tr').eq(i).find('td').eq(0).remove();
-            }
-            $('table').eq(1).find('td').each(function(i, element)
-            {
-              var a = parseFloat( $(element).text() );
-              if (a > max) max = a;
-            });
-            //Min value from azimuth table
-            var min = Number.MAX_VALUE;
-            $('table').eq(1).find('tr td').each(function(i, element)
-            {
-              var a = parseFloat($(element).text());
-              if (a < min && a != 0) min = a;
-            });
-
-            //Tilt Table
-            $('table').eq(2).find('caption').remove();
-            $('table').eq(2).find('br').remove();
-            for (var i = 1; i < 7; i++) {
-              $('table').eq(2).find('tr').eq(1).remove();
-            }
-            for (var i = 1; i < 5; i++) {
-              $('table').eq(2).find('tr').eq(2).remove();
-            }
-            deleteTags($,2);
-            var tilt=$('table').eq(2).parsetable();
-            //Air Temperature Table
-            deleteTags($,3);
-            for (var i = 0; i < 2; i++) {
-              $('table').eq(3).find('tr').eq(1).remove();
-            }
-            var airTemp = $('table').eq(3).parsetable();
-
-            radiation = convertToArray(radiation,1);
-            airTemp = convertToArray(airTemp,1);
-            dataPhotovoltaicAnalytic.data.resource_data.daily_solar_radiation = radiation;
-            dataPhotovoltaicAnalytic.data.resource_data.air_temperature = airTemp;
-            next();
-          });
-        },
-        function (reason) {
-          console.log(reason);
-          radiation = [4.78,5.73,6.55,6.50,6.24,5.60,5.51,5.42,4.95,4.92,4.81,4.49];
-          airTemp = [12.8,14.4,16.7,18.8,19.5,18.5,18.0,18.0,17.3,15.9,14.4,13.0];
-          dataPhotovoltaicAnalytic.data.resource_data.daily_solar_radiation = radiation;
-          dataPhotovoltaicAnalytic.data.resource_data.air_temperature = airTemp;
-          next();
-        });
-
       Project.find({"fields":{"Cost": "true"},"where":{"id":area.projectId}}, function (err, project) {
         if (err) {
           throw err;
@@ -244,6 +271,7 @@ module.exports = function(Result) {
                       dataPhotovoltaicSystemConfiguration.pmp = panel[i].Pmp;
                       dataPhotovoltaicSystemConfiguration.vmp = panel[i].Vmp;
                       dataPhotovoltaicSystemConfiguration.imp = panel[i].Imp;
+                      dataPhotovoltaicSystemConfiguration.ctemp = panel[i].tempCoeffVoc;
                       dataROI.costoPanel = panel[i].Cost;
                       dataROI.costoInversor = inversor[j].Cost;
                       dataPhotovoltaicAnalytic.data.system_data.pv_module_data.pv_module_efficiency = panel[i].ModuleEfficiency;
