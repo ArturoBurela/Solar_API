@@ -1,6 +1,6 @@
 {
-  "SolarDB":{
-    "name":"SolarDB",
+  "SolarDB": {
+    "name": "SolarDB",
     "connector": "memory"
   },
   "GoogleMaps": {
