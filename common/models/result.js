@@ -37,6 +37,7 @@ largo_panel: 1.96,
 ancho_panel: 0.992
 };
 var dataPhotovoltaicSystemConfiguration={
+  mpp: "",
   voc: "",
   isc: "",
   pmp: "",
@@ -312,7 +313,7 @@ module.exports = function(Result) {
                         dataPhotovoltaicAnalytic.data.system_data.pv_module_data.temperature_coefficient = panel[i].tempCoeffVoc;
                         options = {
                           method: 'POST',
-                          url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/37560a4e-ef8a-4904-89e3-35a375f52401/execution',
+                          url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/f8d4ce3e-3f4f-4f3c-bf93-9093e320cfa6/execution',
                           headers:
                           {
                           'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
