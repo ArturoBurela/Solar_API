@@ -1,0 +1,19 @@
+applications:
+- name: predix-solar-api
+  memory: 512M
+  stack: cflinuxfs2
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
+  command:  node .
+  services:
+    - PostgreSQL
+    - UAASolar
+    - PhotosBlobstore
+env:
+    node_env: cloud
+    #uaa_service_label : predix-uaa
+    #base64ClientCredential: bG9naW5fY2xpZW50X2lkOjNzYzBycDEwbg==
+    #loginBase64ClientCredential: bG9naW5fY2xpZW50X2lkOjNzYzBycDEwbg==
+    websocketServerURL: /livestream
+    BROKER_SERVICE_NAME: PhotosBlobstore
+    ENABLE_SERVER_SIDE_ENCRYPTION: False
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/myself/opencv/lib ./my_mighty_openc
