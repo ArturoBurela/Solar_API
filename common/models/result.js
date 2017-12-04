@@ -259,8 +259,18 @@ module.exports = function(Result) {
 });
 
   Result.computeResult = function (id, cb) {
-    var Material = app.models.Material;
+    // Call image analysis
     var options = {
+    method: 'POST',
+    url: 'http://40.76.89.85/api/analyses/start',
+    form: {firstPhotoId: 1, firstPhotoId: 1}
+    };
+    request(options, function(err, response, body) {
+      console.log(err);
+      console.log(body);
+    });
+    var Material = app.models.Material;
+    options = {
     method: 'POST',
     url: 'https://8dc085ff-272e-4cac-901e-15c3f90233ee.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token',
     headers:
