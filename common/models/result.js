@@ -1,6 +1,7 @@
 'use strict';
 var cheerio = require('cheerio');
 var cheerioTableparser = require('cheerio-tableparser');
+var Combinatorics = require('js-combinatorics');
 var async = require('async');
 //Import app object
 var app = require('../../server/server');
@@ -20,21 +21,20 @@ const difPanel = 1;
 const difInverter = 1;
 const inverterEfficience = 0.90;
 const avgLosses = 0.05;
+const largoPanel72 = 1.96;
+const anchoPanel72 = 0.992;
 //var Alternative = app.models.Alternative;
+//{latitud: 19.358920, longitud: -99.259824}
 var dataAreaDelimitationAnalytic=
 {
-area_general: [ {latitud: 19.358920, longitud: -99.259824},
-{latitud: 19.358998, longitud: -99.259370},
-{latitud: 19.358187, longitud: -99.259210},
-{latitud: 19.358109, longitud: -99.259659},
-{latitud: 19.358920, longitud: -99.259824} ],
-obstaculo_1: [ {latitud : 0.000140, longitud: -0.000043},
+area_general:,
+obstaculos: [ {latitud : 0.000140, longitud: -0.000043},
 {latitud : 0.000140, longitud: -0.000053},
 {latitud : 0.000130, longitud: -0.000053},
 {latitud : 0.000130, longitud: -0.000043},
 {latitud : 0.000130, longitud: -0.000043} ],
-largo_panel: 1.96,
-ancho_panel: 0.992
+largo_panel: largoPanel72,
+ancho_panel: anchoPanel72
 };
 var dataPhotovoltaicSystemConfiguration={
   mpp: "",
@@ -297,6 +297,7 @@ module.exports = function(Result) {
                       function () { return j < inversor.length; },
                       function (callback) {
                         console.log("inner count:" + j);
+                        dataPhotovoltaicSystemConfiguration.mpp = panel[i].numberOfPhases;
                         dataPhotovoltaicSystemConfiguration.voc = panel[i].Voc;
                         dataPhotovoltaicSystemConfiguration.isc = panel[i].Isc;
                         dataPhotovoltaicSystemConfiguration.pmp = panel[i].Pmp;
