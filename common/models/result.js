@@ -27,12 +27,8 @@ const anchoPanel72 = 0.992;
 //{latitud: 19.358920, longitud: -99.259824}
 var dataAreaDelimitationAnalytic=
 {
-area_general:,
-obstaculos: [ {latitud : 0.000140, longitud: -0.000043},
-{latitud : 0.000140, longitud: -0.000053},
-{latitud : 0.000130, longitud: -0.000053},
-{latitud : 0.000130, longitud: -0.000043},
-{latitud : 0.000130, longitud: -0.000043} ],
+area_general:"",
+obstaculos: "",
 largo_panel: largoPanel72,
 ancho_panel: anchoPanel72
 };
@@ -57,7 +53,7 @@ var dataPhotovoltaicSystemConfiguration={
   radiacion_estandar: radiacionSTC,
   temperatura_celdas:cellTemp,
   masa_aire:airMass,
-  numero_total_paneles:1282
+  numero_total_paneles:""
 };
 var dataPhotovoltaicAnalytic = {
   data:{
@@ -149,7 +145,20 @@ module.exports = function(Result) {
     var Materiales = app.models.Material;
     var Project = app.models.Project;
     var azimuth;
-    Area.find({"fields":{"center":"true", "projectId":"true"},"where":{"id":ctx.req.query.idArea}}, function(err, area){
+    Area.limits({"where":{"id":ctx.req.query.idArea}},function(err,limit){
+      var limitesArea = [];
+      limit=JSON.stringify(limit);
+      limit = JSON.parse(limit);
+      var coordenada={latitud: "", longitud:""};
+      for (var i = 0; i < limit.length; i++) {
+        coordenada.latitud = limit[i].position.lat;
+        coordenada.longitud = limit[i].position.lng;
+        limitesArea.push(coordenada);
+      }
+      console.log(limitesArea);
+      dataAreaDelimitationAnalytic.area_general = limitesArea;
+    });
+    Area.find({"fields":{"center":"true", "projectId":"true"},"include":"limits","where":{"id":ctx.req.query.idArea}}, function(err, area){
       if (err) {
         throw err;
       }
@@ -259,16 +268,6 @@ module.exports = function(Result) {
 });
 
   Result.computeResult = function (id, cb) {
-    // Call image analysis
-    var options = {
-    method: 'POST',
-    url: 'http://40.76.89.85/api/analyses/start',
-    form: {firstPhotoId: 1, firstPhotoId: 1}
-    };
-    request(options, function(err, response, body) {
-      console.log(err);
-      console.log(body);
-    });
     var Material = app.models.Material;
     options = {
     method: 'POST',
@@ -285,128 +284,171 @@ module.exports = function(Result) {
     request(options, function(error, response, body) {
       if (error) throw new Error(error);
       var UAAresponse = JSON.parse(body);
-      Material.find({"where":{"Type": 1}},function (err,panel){
-        if (err) {
-          throw err;
-        }
-        else if (panel.length > 0) {
-            Material.find({"where":{"Type": 2}},function (err, inversor) {
-              if (err) {
-                throw err;
-              }
-              else if (inversor.length > 0) {
-                var i = 0;
-                async.whilst(
-                  function() {return i < panel.length},
-                  function(outer_callback){
-                    var j = 0;
+      // Call image analysis
+      options = {
+      method: 'POST',
+      url: 'http://40.76.89.85/api/analyses/start',
+      form: {firstPhotoId: 1, lastPhotoId: 1}
+      };
 
-                    console.log("outer count:" + i);
-
-                    async.whilst(
-                      function () { return j < inversor.length; },
-                      function (callback) {
-                        console.log("inner count:" + j);
-                        dataPhotovoltaicSystemConfiguration.mpp = panel[i].numberOfPhases;
-                        dataPhotovoltaicSystemConfiguration.voc = panel[i].Voc;
-                        dataPhotovoltaicSystemConfiguration.isc = panel[i].Isc;
-                        dataPhotovoltaicSystemConfiguration.pmp = panel[i].Pmp;
-                        dataPhotovoltaicSystemConfiguration.vmp = panel[i].Vmp;
-                        dataPhotovoltaicSystemConfiguration.imp = panel[i].Imp;
-                        dataPhotovoltaicSystemConfiguration.ctemp = panel[i].tempCoeffVoc;
-                        dataPhotovoltaicSystemConfiguration.potencia_max_cd= inversor[j].inverterMaxPowerCD;
-                        dataPhotovoltaicSystemConfiguration.potencia_max_er_ca = inversor[j].inverterMaxPowerCA;
-                        dataPhotovoltaicSystemConfiguration.corriente_max = inversor[j].inverterMaxCurrentCD;
-                        dataPhotovoltaicSystemConfiguration.tension_nominal = inversor[j].inverterNominalVoltageCD;
-                        dataROI.costoPanel = panel[i].Cost.toString();
-                        dataROI.costoInversor = inversor[j].Cost.toString();
-                        dataPhotovoltaicAnalytic.data.system_data.pv_module_data.pv_module_efficiency = panel[i].ModuleEfficiency;
-                        dataPhotovoltaicAnalytic.data.system_data.pv_module_data.temperature_coefficient = panel[i].tempCoeffVoc;
+      request(options, function(err, response, body) {
+        console.log(err);
+        console.log(body);
+        var images = JSON.parse(body);
+        console.log(images.results.length);
+        Material.find({"where":{"Type": 1}},function (err,panel){
+          if (err) {
+            throw err;
+            cb(null,500);
+          }
+          else if (panel.length > 0) {
+              Material.find({"where":{"Type": 2}},function (err, inversor) {
+                if (err) {
+                  throw err;
+                  cb(null,500);
+                }
+                else if (inversor.length > 0) {
+                  var k = 0;
+                  async.whilst(
+                    function(){return k < 2},
+                    function(callbackObstacles){
+                      if(k === 1)
+                        dataAreaDelimitationAnalytic.obstaculos = images.results;
+                      else if (k===0)
+                        dataAreaDelimitationAnalytic.obstaculos = [];
                         options = {
                           method: 'POST',
-                          url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/f8d4ce3e-3f4f-4f3c-bf93-9093e320cfa6/execution',
+                          url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/898e8485-bd11-4a6e-a34e-2a4d1b3c1c2d/execution',
                           headers:
                           {
                           'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
                           'content-type': 'application/json',
                           'authorization': 'Bearer ' + UAAresponse.access_token
                           },
-                          json: dataPhotovoltaicSystemConfiguration
+                          json: dataAreaDelimitationAnalytic
                         };
-                        firstAnalytic(options);
-                        function firstAnalytic (options){
-                          request(options, function(error, response, dataPVS){
-                            if (error) throw new Error(error);
-                            options = {
-                              method: 'POST',
-                              url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/aa7bbd17-23c0-4bf1-8a53-3ddd13267f68/execution',
-                              headers:
-                              {
-                              'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
-                              'content-type': 'application/json',
-                              'authorization': 'Bearer ' + UAAresponse.access_token
+                        request(options,function(error,response,areaDelimitation){
+                          dataPhotovoltaicSystemConfiguration.numero_total_paneles = areaDelimitation.numero_paneles;
+                        });
+                        var i = 0;
+                        async.whilst(
+                          function() {return i < panel.length},
+                          function(outer_callback){
+                            var j = 0;
+
+                            console.log("outer count:" + i);
+
+                            async.whilst(
+                              function () { return j < inversor.length; },
+                              function (callback) {
+                                console.log("inner count:" + j);
+                                dataPhotovoltaicSystemConfiguration.mpp = panel[i].numberOfPhases;
+                                dataPhotovoltaicSystemConfiguration.voc = panel[i].Voc;
+                                dataPhotovoltaicSystemConfiguration.isc = panel[i].Isc;
+                                dataPhotovoltaicSystemConfiguration.pmp = panel[i].Pmp;
+                                dataPhotovoltaicSystemConfiguration.vmp = panel[i].Vmp;
+                                dataPhotovoltaicSystemConfiguration.imp = panel[i].Imp;
+                                dataPhotovoltaicSystemConfiguration.ctemp = panel[i].tempCoeffVoc;
+                                dataPhotovoltaicSystemConfiguration.potencia_max_cd= inversor[j].inverterMaxPowerCD;
+                                dataPhotovoltaicSystemConfiguration.potencia_max_er_ca = inversor[j].inverterMaxPowerCA;
+                                dataPhotovoltaicSystemConfiguration.corriente_max = inversor[j].inverterMaxCurrentCD;
+                                dataPhotovoltaicSystemConfiguration.tension_nominal = inversor[j].inverterNominalVoltageCD;
+                                dataROI.costoPanel = panel[i].Cost.toString();
+                                dataROI.costoInversor = inversor[j].Cost.toString();
+                                dataPhotovoltaicAnalytic.data.system_data.pv_module_data.pv_module_efficiency = panel[i].ModuleEfficiency;
+                                dataPhotovoltaicAnalytic.data.system_data.pv_module_data.temperature_coefficient = panel[i].tempCoeffVoc;
+                                options = {
+                                  method: 'POST',
+                                  url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/07c1c0bf-c97d-4ca0-819c-4e3655d6cfba/execution',
+                                  headers:
+                                  {
+                                  'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
+                                  'content-type': 'application/json',
+                                  'authorization': 'Bearer ' + UAAresponse.access_token
+                                  },
+                                  json: dataPhotovoltaicSystemConfiguration
+                                };
+                                photovoltaicSystemConfigurationAnalytic(options);
+                                function photovoltaicSystemConfigurationAnalytic (options){
+                                  request(options, function(error, response, dataPVS){
+                                    if (error) throw new Error(error);
+                                    options = {
+                                      method: 'POST',
+                                      url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/aa7bbd17-23c0-4bf1-8a53-3ddd13267f68/execution',
+                                      headers:
+                                      {
+                                      'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
+                                      'content-type': 'application/json',
+                                      'authorization': 'Bearer ' + UAAresponse.access_token
+                                      },
+                                      json: dataPhotovoltaicAnalytic
+                                    };
+                                    photovoltaicSolarAnalytic(options, dataPVS);
+                                  });
+                                }
+                                function photovoltaicSolarAnalytic (secondOptions, dataPVS){
+                                  var photovoltaicConfiguration = JSON.parse(dataPVS.result);
+                                  console.log(JSON.stringify(photovoltaicConfiguration));
+                                  dataPhotovoltaicAnalytic.data.plant_data.system_capacity = photovoltaicConfiguration.total_kw / 1000;
+                                  dataROI.numInversores =  photovoltaicConfiguration.num_minimo_inversores.toString();
+                                  dataROI.numPaneles = dataPhotovoltaicSystemConfiguration.numero_total_paneles.toString();
+                                  request(secondOptions, function(error, response, dataPSA){
+                                    if(error) throw new Error(error);
+                                    //console.log(JSON.stringify(dataROI));
+                                    options = {
+                                      method: 'POST',
+                                      url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/86a45079-21ce-4c65-a5e1-2329a18016fb/execution',
+                                      headers:
+                                      {
+                                      'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
+                                      'content-type': 'application/json',
+                                      'authorization': 'Bearer ' + UAAresponse.access_token
+                                      },
+                                      json: dataROI
+                                    };
+                                    roiAnalytic(options, dataPSA);
+                                  });
+                                }
+
+                                function roiAnalytic (thirdOptions,dataPSA){
+                                  var photovoltaicAnalytics = JSON.parse(dataPSA.result);
+                                  //console.log("Photovoltaic Analytic: ",body.result);
+                                  console.log(JSON.stringify(photovoltaicAnalytics));
+                                  var energiaTotal = photovoltaicAnalytics.annual_energy * 1000;
+                                  dataROI.energiaGenerada = energiaTotal.toString();
+                                  request(thirdOptions, function(error, response, roi){
+                                    if(error) throw new Error(error);
+                                    var finalROI = JSON.parse(unescape(roi.result));
+                                    console.log(JSON.stringify(finalROI));
+                                    j++;
+                                    setTimeout(callback, 0);
+                                  });
+                                };
                               },
-                              json: dataPhotovoltaicAnalytic
-                            };
-                            secondAnalytic(options, dataPVS);
-                          });
-                        }
-
-                      function secondAnalytic (secondOptions, dataPVS){
-                        var photovoltaicConfiguration = JSON.parse(dataPVS.result);
-                        console.log(JSON.stringify(photovoltaicConfiguration));
-                        dataPhotovoltaicAnalytic.data.plant_data.system_capacity = (dataPhotovoltaicSystemConfiguration.pmp * dataPhotovoltaicSystemConfiguration.numero_total_paneles) / 1000;
-                        dataROI.numInversores =  photovoltaicConfiguration.num_minimo_inversores.toString();
-                        dataROI.numPaneles = dataPhotovoltaicSystemConfiguration.numero_total_paneles.toString();
-                        request(secondOptions, function(error, response, dataPSA){
-                          if(error) throw new Error(error);
-                          //console.log(JSON.stringify(dataROI));
-                          options = {
-                            method: 'POST',
-                            url: 'https://predix-analytics-catalog-release.run.aws-usw02-pr.ice.predix.io/api/v1/catalog/analytics/86a45079-21ce-4c65-a5e1-2329a18016fb/execution',
-                            headers:
-                            {
-                            'Predix-Zone-Id': '00c30eb0-8b5e-411c-bc3f-9d3a5d70f0d0',
-                            'content-type': 'application/json',
-                            'authorization': 'Bearer ' + UAAresponse.access_token
-                            },
-                            json: dataROI
-                          };
-                          thirdAnalytic(options, dataPSA);
-                        });
-                      }
-
-                      function thirdAnalytic (thirdOptions,dataPSA){
-                        var photovoltaicAnalytics = JSON.parse(dataPSA.result);
-                        //console.log("Photovoltaic Analytic: ",body.result);
-                        console.log(JSON.stringify(photovoltaicAnalytics));
-                        var energiaTotal = photovoltaicAnalytics.annual_energy * 1000;
-                        dataROI.energiaGenerada = energiaTotal.toString();
-                        request(thirdOptions, function(error, response, roi){
-                          if(error) throw new Error(error);
-                          var finalROI = JSON.parse(unescape(roi.result));
-                          console.log(JSON.stringify(finalROI));
-                           j++;
-                          setTimeout(callback, 0);
-                        });
-                      };
+                              function (err) {
+                                console.log("in out");
+                                i++;
+                                outer_callback(); // <--- here
+                              }
+                            );
+                          },
+                          function(err){
+                            console.log("out out");
+                          }
+                        );
                       },
                       function (err) {
-                        console.log("in out");
-                          i++;
-                        outer_callback(); // <--- here
+                        console.log("huehue");
+                        k++;
+                        callbackObstacles(); // <--- here
                       }
                     );
-                  },
-                  function(err){
-                    console.log("out out");
                   }
-                );
-                }
-              });
-            }
+                });
+              }
+            });
           });
-      });
-      cb(null,200);
+        });
+        cb(null,200);
+      };
     };
-  };
