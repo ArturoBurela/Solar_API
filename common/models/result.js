@@ -145,9 +145,11 @@ module.exports = function(Result) {
     var Materiales = app.models.Material;
     var Project = app.models.Project;
     var azimuth;
-    Area.limits({"where":{"id":ctx.req.query.idArea}},function(err,limit){
+    Area.find({"include":["limits"],"where":{"id":ctx.req.query.idArea}},function(err,limit){
       var limitesArea = [];
-      limit=JSON.stringify(limit);
+      limit = JSON.stringify(limit[0]);
+      limit = JSON.parse(limit);
+      limit = JSON.stringify(limit.limits);
       limit = JSON.parse(limit);
       var coordenada={latitud: "", longitud:""};
       for (var i = 0; i < limit.length; i++) {
@@ -155,10 +157,13 @@ module.exports = function(Result) {
         coordenada.longitud = limit[i].position.lng;
         limitesArea.push(coordenada);
       }
+      coordenada.latitud = limit[0].position.lat;
+      coordenada.longitud = limit[0].position.lng;
+      limitesArea.push(coordenada);
       console.log(limitesArea);
       dataAreaDelimitationAnalytic.area_general = limitesArea;
     });
-    Area.find({"fields":{"center":"true", "projectId":"true"},"include":"limits","where":{"id":ctx.req.query.idArea}}, function(err, area){
+    Area.find({"fields":{"center":"true", "projectId":"true"},"where":{"id":ctx.req.query.idArea}}, function(err, area){
       if (err) {
         throw err;
       }
@@ -269,7 +274,7 @@ module.exports = function(Result) {
 
   Result.computeResult = function (id, cb) {
     var Material = app.models.Material;
-    options = {
+    var options = {
     method: 'POST',
     url: 'https://8dc085ff-272e-4cac-901e-15c3f90233ee.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token',
     headers:
@@ -328,7 +333,8 @@ module.exports = function(Result) {
                           json: dataAreaDelimitationAnalytic
                         };
                         request(options,function(error,response,areaDelimitation){
-                          dataPhotovoltaicSystemConfiguration.numero_total_paneles = areaDelimitation.numero_paneles;
+                          var areaDel = JSON.parse(areaDelimitation.result);
+                          dataPhotovoltaicSystemConfiguration.numero_total_paneles = areaDel.numero_paneles;
                         });
                         var i = 0;
                         async.whilst(
