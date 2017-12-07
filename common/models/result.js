@@ -698,12 +698,12 @@ module.exports = function(Result) {
                                       if(err) cb(null, err);
                                       console.log("Result created");
                                       //Result.materials
+                                      j++;
+                                      setTimeout(callback, 0);
                                     });
                                   });
                                 });
-                                j++;
-                                setTimeout(callback, 0);
-                            }
+                            };
                           },
                           function (err) {
                             console.log("in out");
