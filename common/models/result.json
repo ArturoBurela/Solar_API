@@ -16,10 +16,7 @@
     },
     "angle": {
       "type": "string",
-      "required": true,
-      "postgresql": {
-        "dataType": "DOUBLE PRECISION"
-      }
+      "required": true
     },
     "generatedEnergy": {
       "type": "number",
@@ -28,11 +25,29 @@
       }
     },
     "roi": {
-      "type": "string",
+      "type": "number",
       "required": true,
       "postgresql": {
         "dataType": "DOUBLE PRECISION"
       }
+    },
+    "savings": {
+      "type": [
+        "string"
+      ],
+      "required": true
+    },
+    "payback": {
+      "type": "string",
+      "required": true
+    },
+    "costoInstalacion": {
+      "type": "string",
+      "required": true
+    },
+    "ganancias": {
+      "type": "string",
+      "required": true
     }
   },
   "validations": [],
@@ -43,7 +58,7 @@
       "foreignKey": ""
     },
     "materials": {
-      "type": "hasOne",
+      "type": "hasMany",
       "model": "Material",
       "foreignKey": ""
     }
