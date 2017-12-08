@@ -19,17 +19,12 @@
       "required": true
     },
     "generatedEnergy": {
-      "type": "number",
-      "postgresql": {
-        "dataType": "DOUBLE PRECISION"
-      }
+      "type": "string",
+      "required": true
     },
     "roi": {
-      "type": "number",
-      "required": true,
-      "postgresql": {
-        "dataType": "DOUBLE PRECISION"
-      }
+      "type": "string",
+      "required": true
     },
     "savings": {
       "type": [

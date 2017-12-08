@@ -12,7 +12,7 @@
       "required": true
     },
     "generatedEnergy": {
-      "type": "number",
+      "type": "string",
       "required": true
     }
   },

@@ -435,59 +435,72 @@ module.exports = function(Result) {
                                 });
                               }
 
-                              function roiAnalytic (thirdOptions,dataPSA, photovoltaicConfiguration,id){
+                              function roiAnalytic (thirdOptions,dataPSA, photovoltaicConfiguration,id,areaDel){
                                 var photovoltaicAnalytics = JSON.parse(dataPSA.result);
-                                var Area = app.models.Area;
-                                var Result= app.models.Result;
-                                var Alternative = app.models.Alternative;
+
                                 console.log(JSON.stringify(photovoltaicAnalytics));
                                 var energiaTotal = photovoltaicAnalytics.annual_energy * 1000;
                                 dataROI.energiaGenerada = energiaTotal.toString();
+                                console.log(JSON.stringify(dataROI));
                                 request(thirdOptions, function(error, response, roi){
                                   if(error) cb(null,error);
-                                  var finalROI = JSON.parse(unescape(roi.result));
+                                  finalResults(roi, photovoltaicAnalytics, photovoltaicConfiguration, id,areaDel);
+                                  });
+                                }
+                                function finalResults(roi, photovoltaicAnalytics, photovoltaicConfiguration,id, areaDel){
+                                  var finalROI = JSON.parse(roi.result);
+                                  finalROI = JSON.parse(finalROI);
+                                  var Area = app.models.Area;
+                                  var Result = app.models.Result;
+                                  var Alternative = app.models.Alternative;
                                   console.log(JSON.stringify(finalROI));
+                                  var energiaTotal = photovoltaicConfiguration.total_kw_sistema / 1000;
                                   Area.find({"fields":{"center":"true", "projectId":"true"},"where":{"id":id}}, function(err, area){
                                     if (err) {
                                       cb(null,err);
+                                      //throw err;
                                     }
                                     var saves = [finalROI.anio_0,finalROI.anio_1,finalROI.anio_2,finalROI.anio_3,finalROI.anio_4,finalROI.anio_5,
                                       finalROI.anio_6,finalROI.anio_7,finalROI.anio_8,finalROI.anio_9,finalROI.anio_10,finalROI.anio_11,finalROI.anio_12,finalROI.anio_13,finalROI.anio_14,
                                       finalROI.anio_15,finalROI.anio_16,finalROI.anio_17,finalROI.anio_18,finalROI.anio_19,finalROI.anio_20];
                                       area = JSON.stringify(area[0]);
                                       area = JSON.parse(area);
+                                      console.log(finalROI.ROI);
                                       console.log(area.center.lat.toString());
                                       console.log(area.center.lng.toString());
-
+                                      var azimuth = Math.floor(area.center.lat);
                                       Alternative.create([{
-                                        roi: parseFloat(finalROI.ROI),
-                                        generatedEnergy: energiaTotal,
+                                        roi: finalROI.ROI,
+                                        generatedEnergy: energiaTotal.toString(),
                                         areaId: id
                                       }], function(err, alternative){
-                                        //alternative = JSON.parse(alternative);
+                                        console.log("Alternative created");
+                                        console.log(alternative);
+                                        if(err) cb(null, err);
                                         Result.create([{
                                           position: {
                                             lat: area.center.lat,
                                             lng: area.center.lng
                                           },
                                           direction: azimuth.toString(),
-                                          angle: area.center.lat,
-                                          generatedEnergy: photovoltaicConfiguration.total_kw_sistema / 1000,
-                                          roi: finalROI.ROI,
+                                          angle: area.center.lat.toString(),
+                                          generatedEnergy: energiaTotal.toString(),
+                                          roi: alternative[0].roi,
                                           savings: saves,
                                           payback: finalROI.payback,
                                           costoInstalacion: finalROI.costoTotal,
                                           ganancias: finalROI.ganancias,
-                                          alternativeId: alternative.id
+                                          alternativeId: alternative[0].id
                                         }], function(err, created){
-                                          if(err) cb(null, err);
+                                          if(err) (null, err);
+                                          console.log(created);
+                                          console.log("Result created");
                                           //Result.materials
                                           j++;
                                           setTimeout(callback, 0);
                                         });
                                       });
                                     });
-                                  });
                                 };
                               },
                               function (err) {
@@ -653,9 +666,10 @@ module.exports = function(Result) {
                               });
                             }
                             function finalResults(roi, photovoltaicAnalytics, photovoltaicConfiguration,id, areaDel){
-                              var finalROI = JSON.parse(unescape(roi.result));
+                              var finalROI = JSON.parse(roi.result);
+                              finalROI = JSON.parse(finalROI);
                               var Area = app.models.Area;
-                              var Result= app.models.Result;
+                              var Result = app.models.Result;
                               var Alternative = app.models.Alternative;
                               console.log(JSON.stringify(finalROI));
                               var energiaTotal = photovoltaicConfiguration.total_kw_sistema / 1000;
@@ -669,16 +683,17 @@ module.exports = function(Result) {
                                   finalROI.anio_15,finalROI.anio_16,finalROI.anio_17,finalROI.anio_18,finalROI.anio_19,finalROI.anio_20];
                                   area = JSON.stringify(area[0]);
                                   area = JSON.parse(area);
+                                  console.log(finalROI.ROI);
                                   console.log(area.center.lat.toString());
                                   console.log(area.center.lng.toString());
                                   var azimuth = Math.floor(area.center.lat);
-                                  var roiF= parseFloat(finalROI.ROI);
                                   Alternative.create([{
-                                    roi: roiF,
-                                    generatedEnergy: energiaTotal,
+                                    roi: finalROI.ROI,
+                                    generatedEnergy: energiaTotal.toString(),
                                     areaId: id
                                   }], function(err, alternative){
                                     console.log("Alternative created");
+                                    console.log(alternative);
                                     if(err) cb(null, err);
                                     Result.create([{
                                       position: {
@@ -687,15 +702,16 @@ module.exports = function(Result) {
                                       },
                                       direction: azimuth.toString(),
                                       angle: area.center.lat.toString(),
-                                      generatedEnergy: energiaTotal,
-                                      roi: alternative.roi,
+                                      generatedEnergy: energiaTotal.toString(),
+                                      roi: alternative[0].roi,
                                       savings: saves,
                                       payback: finalROI.payback,
                                       costoInstalacion: finalROI.costoTotal,
                                       ganancias: finalROI.ganancias,
-                                      alternativeId: alternative.id
+                                      alternativeId: alternative[0].id
                                     }], function(err, created){
-                                      if(err) cb(null, err);
+                                      if(err) (null, err);
+                                      console.log(created);
                                       console.log("Result created");
                                       //Result.materials
                                       j++;
