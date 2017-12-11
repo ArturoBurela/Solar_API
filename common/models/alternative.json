@@ -17,13 +17,7 @@
     }
   },
   "validations": [],
-  "relations": {
-    "results": {
-      "type": "hasMany",
-      "model": "Result",
-      "foreignKey": ""
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }
