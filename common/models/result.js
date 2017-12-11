@@ -391,8 +391,8 @@ module.exports = function(Result) {
                                 },
                                 json: dataPhotovoltaicSystemConfiguration
                               };
-                              photovoltaicSystemConfigurationAnalytic(options, id);//call function to start analytic
-                              function photovoltaicSystemConfigurationAnalytic (options,id){
+                              photovoltaicSystemConfigurationAnalytic(options, id, areaDel,panel[i], inversor[j]);//call function to start analytic
+                              function photovoltaicSystemConfigurationAnalytic (options,id, areaDel,panel, inversor){
                                 request(options, function(error, response, dataPVS){//make request and set options for Photovoltaic Solar Analytics (GE native)
                                   if (error) cb(null,error);
                                   options = {
@@ -406,10 +406,10 @@ module.exports = function(Result) {
                                     },
                                     json: dataPhotovoltaicAnalytic
                                   };
-                                  photovoltaicSolarAnalytic(options, dataPVS,id);//call function to start analytic
+                                  photovoltaicSolarAnalytic(options, dataPVS,id, areaDel,panel, inversor);//call function to start analytic
                                 });
                               }
-                              function photovoltaicSolarAnalytic (secondOptions, dataPVS,id){
+                              function photovoltaicSolarAnalytic (secondOptions, dataPVS,id, areaDel,panel, inversor){
 
                                 //Parse values to convert them into inputs for the next analytic
                                 var photovoltaicConfiguration = JSON.parse(dataPVS.result);
@@ -431,11 +431,11 @@ module.exports = function(Result) {
                                     },
                                     json: dataROI
                                   };
-                                  roiAnalytic(options, dataPSA, photovoltaicConfiguration,id);
+                                  roiAnalytic(options, dataPSA, photovoltaicConfiguration,id,areaDel,panel, inversor);
                                 });
                               }
 
-                              function roiAnalytic (thirdOptions,dataPSA, photovoltaicConfiguration,id,areaDel){
+                              function roiAnalytic (thirdOptions,dataPSA, photovoltaicConfiguration,id,areaDel,panel, inversor){
                                 var photovoltaicAnalytics = JSON.parse(dataPSA.result);
 
                                 console.log(JSON.stringify(photovoltaicAnalytics));
@@ -444,10 +444,10 @@ module.exports = function(Result) {
                                 console.log(JSON.stringify(dataROI));
                                 request(thirdOptions, function(error, response, roi){
                                   if(error) cb(null,error);
-                                  finalResults(roi, photovoltaicAnalytics, photovoltaicConfiguration, id,areaDel);
+                                  finalResults(roi, photovoltaicAnalytics, photovoltaicConfiguration, id,areaDel,panel, inversor);
                                   });
                                 }
-                                function finalResults(roi, photovoltaicAnalytics, photovoltaicConfiguration,id, areaDel){
+                                function finalResults(roi, photovoltaicAnalytics, photovoltaicConfiguration,id, areaDel,panel, inversor){
                                   var finalROI = JSON.parse(roi.result);
                                   finalROI = JSON.parse(finalROI);
                                   var Area = app.models.Area;
@@ -469,36 +469,28 @@ module.exports = function(Result) {
                                       console.log(area.center.lat.toString());
                                       console.log(area.center.lng.toString());
                                       var azimuth = Math.floor(area.center.lat);
-                                      Alternative.create([{
-                                        roi: finalROI.ROI,
+                                      Result.create([{
+                                        position: {
+                                          lat: area.center.lat,
+                                          lng: area.center.lng
+                                        },
+                                        direction: azimuth.toString(),
+                                        angle: area.center.lat.toString(),
                                         generatedEnergy: energiaTotal.toString(),
+                                        roi: finalROI.ROI,
+                                        savings: saves,
+                                        payback: finalROI.payback,
+                                        costoInstalacion: finalROI.costoTotal,
+                                        ganancias: finalROI.ganancias,
+                                        idPanel: panel.id,
+                                        idInverter: inversor.id,
                                         areaId: id
-                                      }], function(err, alternative){
-                                        console.log("Alternative created");
-                                        console.log(alternative);
-                                        if(err) cb(null, err);
-                                        Result.create([{
-                                          position: {
-                                            lat: area.center.lat,
-                                            lng: area.center.lng
-                                          },
-                                          direction: azimuth.toString(),
-                                          angle: area.center.lat.toString(),
-                                          generatedEnergy: energiaTotal.toString(),
-                                          roi: alternative[0].roi,
-                                          savings: saves,
-                                          payback: finalROI.payback,
-                                          costoInstalacion: finalROI.costoTotal,
-                                          ganancias: finalROI.ganancias,
-                                          alternativeId: alternative[0].id
-                                        }], function(err, created){
-                                          if(err) (null, err);
-                                          console.log(created);
-                                          console.log("Result created");
-                                          //Result.materials
-                                          j++;
-                                          setTimeout(callback, 0);
-                                        });
+                                      }], function(err, resultCreated){
+                                        if(err) (null, err);
+                                        console.log(resultCreated);
+                                        console.log("Result created");
+                                        j++;
+                                        setTimeout(callback, 0);
                                       });
                                     });
                                 };
@@ -515,7 +507,8 @@ module.exports = function(Result) {
                             var Area = app.models.Area;
                             Area.upsertWithWhere({"where":{"id":id}},{Vuelo:true},function(err, update){
                                 cb(null,200);// <--- here
-                            });
+                          }
+                        );
                           }
                         );
                       }
