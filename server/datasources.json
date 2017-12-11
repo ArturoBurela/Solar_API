@@ -1,7 +1,13 @@
 {
   "SolarDB": {
+    "host": "db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com",
+    "port": 5432,
+    "url": "postgres://MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M:UrN0t4lLoW3dH3r3*4l1@db-1a7a7a3a-30cc-4ce1-829c-3b5bbc051b4d.c7uxaqxgfov3.us-west-2.rds.amazonaws.com:5432/SolarDB",
+    "database": "SolarDB",
+    "password": "UrN0t4lLoW3dH3r3*4l1",
     "name": "SolarDB",
-    "connector": "memory"
+    "user": "MTQ3MmMzZDZkZTQ2ZjAyNmU0OWViMDQ3OTkzNDZmM2M",
+    "connector": "postgresql"
   },
   "GoogleMaps": {
     "name": "GoogleMaps",

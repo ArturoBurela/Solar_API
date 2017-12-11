@@ -62,9 +62,5 @@
   "Area": {
     "dataSource": "SolarDB",
     "public": true
-  },
-  "Alternative": {
-    "dataSource": "SolarDB",
-    "public": true
   }
 }
