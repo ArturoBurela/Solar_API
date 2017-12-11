@@ -6,7 +6,7 @@ module.exports = function(app) {
 const fs = require('fs');
   var Role = app.models.Role;
   // automigrar todos los modelos a base de datos en postgresql
-  app.datasources.SolarDB.automigrate(function(err, result) {
+  app.datasources.SolarDB.autoupdate(function(err, result) {
     if (err) {
       throw err;
     } else {
