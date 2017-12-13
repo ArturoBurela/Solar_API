@@ -51,6 +51,10 @@
     "dataSource": "SolarDB",
     "public": true
   },
+  "Route": {
+    "dataSource": "SolarDB",
+    "public": true
+  },
   "Photo": {
     "dataSource": "SolarDB",
     "public": true

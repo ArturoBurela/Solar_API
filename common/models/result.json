@@ -51,6 +51,15 @@
     "idInverter": {
       "type": "number",
       "required": true
+    },
+    "numInverter": {
+      "type": "string"
+    },
+    "strings": {
+      "type": "string"
+    },
+    "pvmoduleString": {
+      "type": "string"
     }
   },
   "validations": [],

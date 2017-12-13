@@ -482,6 +482,9 @@ module.exports = function(Result) {
                                         payback: finalROI.payback,
                                         costoInstalacion: finalROI.costoTotal,
                                         ganancias: finalROI.ganancias,
+                                        numInverter: photovoltaicConfiguration.num_minimo_inversores.toString(),
+                                        strings:photovoltaicConfiguration.maximos_strings_paralelo.toString(),
+                                        pvmoduleString: photovoltaicConfiguration.nms.toString();
                                         idPanel: panel.id,
                                         idInverter: inversor.id,
                                         areaId: id
@@ -693,6 +696,9 @@ module.exports = function(Result) {
                                     payback: finalROI.payback,
                                     costoInstalacion: finalROI.costoTotal,
                                     ganancias: finalROI.ganancias,
+                                    numInverter: photovoltaicConfiguration.num_minimo_inversores.toString(),
+                                    strings:photovoltaicConfiguration.maximos_strings_paralelo.toString(),
+                                    pvmoduleString: photovoltaicConfiguration.nms.toString();
                                     idPanel: panel.id,
                                     idInverter: inversor.id,
                                     areaId: id

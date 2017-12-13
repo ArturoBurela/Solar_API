@@ -49,6 +49,11 @@
       "type": "hasMany",
       "model": "Coordinate",
       "foreignKey": ""
+    },
+    "pointsRoute": {
+      "type": "hasMany",
+      "model": "Route",
+      "foreignKey": ""
     }
   },
   "acls": [],

@@ -32,6 +32,9 @@
       "postgresql": {
         "dataType": "DOUBLE PRECISION"
       }
+    },
+    "SubstationCoordinate": {
+      "type": "geopoint"
     }
   },
   "validations": [],
@@ -56,6 +59,11 @@
       "model": "Result",
       "foreignKey": "",
       "through": "Area"
+    },
+    "route": {
+      "type": "hasMany",
+      "model": "Coordinate",
+      "foreignKey": ""
     }
   },
   "acls": [
